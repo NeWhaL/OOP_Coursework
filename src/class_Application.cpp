@@ -1,4 +1,4 @@
-#include "../include/class_application.h"
+#include "../include/class_Application.h"
 
 namespace app {
 Application::Application() : Window(nullptr) {}
