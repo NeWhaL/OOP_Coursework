@@ -3,6 +3,7 @@
 class Weapon : public GameObject {
 protected:
   float damage;
+  float hitting_range;
 
 public:
 };

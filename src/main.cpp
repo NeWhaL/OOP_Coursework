@@ -1,10 +1,9 @@
 #include "../include/main.h"
-#include "../include/class_application.h"
+#include "../include/class_Manager.h"
 
 int main(int argc, char *argv[]) {
-  app::Application application;
-  application.Init();
-  application.Run();
-  application.End();
+  Manager::getInstance()->Init();
+  Manager::getInstance()->Run();
+  Manager::getInstance()->End();
   return 0;
 }
