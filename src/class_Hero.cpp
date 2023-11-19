@@ -15,7 +15,22 @@ Hero::Hero() : GameObject(), speed(200), shot_cooldown(10), melee_cooldown(10) {
 
 Hero::~Hero() {}
 
-void Hero::Update(float ft) {}
+void Hero::Update(float dt) { Move(dt); }
+
+void Hero::Move(float dt) {
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+    coordinates.y += speed * -dt;
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+    coordinates.x += speed * -dt;
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+    coordinates.y += speed * dt;
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+    coordinates.x += speed * dt;
+  }
+  MoveSprite();
+}
+
+void Hero::MoveSprite() { head->setPosition(coordinates.x, coordinates.y); }
 
 void Hero::Draw(sf::RenderWindow *window) const {
   head->setTextureRect(sf::IntRect(0, 0, 50, 50));

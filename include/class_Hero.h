@@ -15,6 +15,8 @@ private:
 public:
   Hero();
   ~Hero();
+  void MoveSprite();
+  void Move(float dt);
   void Draw(sf::RenderWindow *window) const;
   void Update(float dt);
 };

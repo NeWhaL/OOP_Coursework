@@ -2,7 +2,7 @@
 
 Manager *Manager::manager = nullptr;
 
-Manager::Manager() : window(nullptr) {}
+Manager::Manager() : window(nullptr) { hero = new Hero; }
 
 Manager::~Manager() {}
 
@@ -15,10 +15,10 @@ Manager *Manager::getInstance() {
 void Manager::Init() {
   window = new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "GAME",
                                 sf::Style::Fullscreen);
+  // window = new sf::RenderWindow(sf::VideoMode(640, 480), "GAME");
 }
 
 void Manager::Run() {
-  hero = new Hero;
   while (window->isOpen()) {
     sf::Event ev;
     while (window->pollEvent(ev)) {
@@ -28,11 +28,23 @@ void Manager::Run() {
     }
 
     // window->clear(sf::Color(122, 0, 0));
+    Update();
     DrawAllObject();
-    window->display();
   }
 }
 
 void Manager::End() { delete window; }
 
-void Manager::DrawAllObject() const { hero->Draw(window); }
+void Manager::DrawAllObject() const {
+  window->clear();
+  hero->Draw(window);
+  window->display();
+}
+
+void Manager::Update() {
+  float dt = time.getElapsedTime().asSeconds();
+  time.restart();
+
+  hero->Update(dt);
+  // for (auto i : )
+}
