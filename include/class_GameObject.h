@@ -1,16 +1,26 @@
+#ifndef GAMEOBJ
+#define GAMEOBJ
+
+#include "class_ManagerResource.h"
+#include "global_functions.h"
 #include "main.h"
+#include "struct_Message.h"
+
+struct Message;
 
 class GameObject {
 protected:
+  float speed;
   sf::Vector2f coordinates;
 
 public:
   GameObject();
+  GameObject(sf::Vector2f coordinates, float speed);
   void SetPosition(sf::Vector2f coordinates);
   sf::Vector2f GetPosition() const;
-  sf::Vector2f CurrentPosition() const;
   virtual ~GameObject();
   virtual void Draw(sf::RenderWindow *window) const = 0;
-  void SetTexture();
   virtual void Update(float dt) = 0;
+  virtual void SendMessage(Message *message) = 0;
 };
+#endif

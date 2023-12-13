@@ -11,9 +11,11 @@ ResourceManager::ResourceManager() {
   hero_legs_left->loadFromFile("images/hero_legs_left.png");
   hero_legs_right = new sf::Texture;
   hero_legs_right->loadFromFile("images/hero_legs_right.png");
+  shot = new sf::Texture;
+  shot->loadFromFile("images/shot.png");
 }
 
-ResourceManager *ResourceManager::getInstance() {
+ResourceManager *ResourceManager::GetInstance() {
   if (not resource_manager) {
     resource_manager = new ResourceManager;
   }
@@ -30,3 +32,5 @@ sf::Texture *ResourceManager::getTHeroLegsLeft() const {
 sf::Texture *ResourceManager::getTHeroLegsRight() const {
   return hero_legs_right;
 }
+
+sf::Texture *ResourceManager::getTShot() const { return shot; }

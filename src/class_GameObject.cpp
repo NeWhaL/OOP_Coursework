@@ -1,10 +1,11 @@
 #include "../include/class_GameObject.h"
 
-GameObject::GameObject() : coordinates(0, 0) {}
+GameObject::GameObject() {}
+
+GameObject::GameObject(sf::Vector2f coordinates, float speed)
+    : coordinates(coordinates), speed(speed) {}
 
 GameObject::~GameObject() {}
-
-sf::Vector2f GameObject::CurrentPosition() const { return coordinates; }
 
 void GameObject::SetPosition(sf::Vector2f coordinates) {
   this->coordinates = coordinates;
