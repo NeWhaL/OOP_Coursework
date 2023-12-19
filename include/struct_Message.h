@@ -15,7 +15,7 @@ struct Message {
 
   union {
     struct {
-      sf::Vector2f old_position;
+      // GameObject *who_goes;
     } move;
     struct {
       GameObject *new_object;
@@ -28,7 +28,6 @@ struct Message {
     struct {
       float damage;
       GameObject *to_who;
-      GameObject *by_who;
     } deal_damage;
   };
 };

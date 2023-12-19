@@ -2,9 +2,16 @@
 
 Manager *Manager::manager = nullptr;
 
-Manager::Manager() : game_objects(), messages(), window(nullptr) {
-  window = new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "GAME",
-                                sf::Style::Fullscreen);
+Manager::Manager()
+    : game_objects(), messages(),
+      sprite_room(new sf::Sprite(*ResourceManager::GetInstance()->getTRoom())),
+      window(new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "GAME",
+                                  sf::Style::Fullscreen)) {
+  // размеры поля сражения
+  size_arena.up_left.x = 320;
+  size_arena.up_left.y = 180;
+  size_arena.down_right.x = 1720;
+  size_arena.down_right.y = 900;
 }
 
 Manager::~Manager() {
@@ -39,8 +46,13 @@ void Manager::EventProcessing(sf::Event &ev) {
   }
 }
 
+Hero *Manager::GetHero() const { return hero; }
+
+Size_arena Manager::GetSizeArena() const { return size_arena; }
+
 void Manager::Run() {
-  game_objects.push_front(new Hero);
+  hero = new Hero({600, 400}, 300, 10, 0.1, 1, 2);
+  game_objects.push_back(new EnemyMelee({1000, 600}, 200, 10, 1));
   sf::Clock time;
   while (window->isOpen()) {
     sf::Event ev;
@@ -56,19 +68,17 @@ void Manager::End() { delete window; }
 
 void Manager::DrawAllObject() const {
   window->clear();
-  int c = 0;
-  for (const auto &i : game_objects) {
+  window->draw(*sprite_room);
+  for (const auto &i : game_objects)
     i->Draw(window);
-    c++;
-  }
+  hero->Draw(window);
   window->display();
 }
 
 void Manager::Update(float dt) {
-  // здесь будут генерироваться сообщения всех обьектов
-  for (auto &object : game_objects) {
+  hero->Update(dt);
+  for (auto &object : game_objects)
     object->Update(dt);
-  }
 
   Message *message;
   while (not messages.empty()) {
@@ -85,14 +95,13 @@ void Manager::Update(float dt) {
       game_objects.erase(kill);
     } break;
     }
-
     if (message->type_message == TypeMessage::MOVE or
         message->type_message == TypeMessage::DEAL_DAMAGE) {
+      hero->SendMessage(message);
       for (auto i : game_objects) {
         i->SendMessage(message);
       }
     }
-
     delete message;
   }
 }

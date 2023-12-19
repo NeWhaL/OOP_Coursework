@@ -1,9 +1,11 @@
 #include "../include/class_Hero.h"
 #include "../include/class_Manager.h"
 
-Hero::Hero()
-    : GameObject({100, 100}, 200), shot_cooldown(0), shot_cooldown_total(0.2),
-      melee_cooldown(0) {
+Hero::Hero(sf::Vector2f coordinates, float speed, float health,
+           float shot_cooldown_total, float melee_cooldown_total, float damage)
+    : GameObject(coordinates, speed), shot_cooldown_total(shot_cooldown_total),
+      melee_cooldown_total(melee_cooldown_total), health(health),
+      shot_cooldown(0), melee_cooldown(0), damage(damage) {
   ResourceManager *RM = ResourceManager::GetInstance();
   head = new sf::Sprite;
   legs_up_down = new sf::Sprite;
@@ -11,13 +13,24 @@ Hero::Hero()
   legs_right = new sf::Sprite;
 
   head->setTexture(*RM->getTHeroHead());
-  legs_up_down->setTexture(*RM->getTHeroHead());
-  legs_left->setTexture(*RM->getTHeroHead());
-  legs_right->setTexture(*RM->getTHeroHead());
+  legs_up_down->setTexture(*RM->getTHeroLegsUpDown());
+  legs_left->setTexture(*RM->getTHeroLegsLeft());
+  legs_right->setTexture(*RM->getTHeroLegsRight());
 
-  head->setTextureRect(sf::IntRect(0, 0, 50, 50));
   sf::FloatRect bounds_head = head->getLocalBounds();
-  head->setOrigin(bounds_head.width / 2, bounds_head.height / 2);
+  head->setTextureRect(sf::IntRect(0, 0, bounds_head.width / amount_sprite_head,
+                                   bounds_head.height));
+  head->setOrigin(bounds_head.width / amount_sprite_head / 2,
+                  bounds_head.height / 2);
+
+  sf::FloatRect bounds_legs_up_down = legs_up_down->getLocalBounds();
+  legs_up_down->setTextureRect(
+      sf::IntRect(0, 0, bounds_legs_up_down.width / amount_sprite_legs_up_down,
+                  bounds_legs_up_down.height));
+  legs_up_down->setOrigin(bounds_legs_up_down.width /
+                              amount_sprite_legs_up_down / 2,
+                          bounds_legs_up_down.height / 2);
+  radius_hitbox = bounds_head.height / 2;
 }
 
 Hero::~Hero() {
@@ -30,6 +43,7 @@ Hero::~Hero() {
 void Hero::Update(float dt) {
   Move(dt);
   MoveSprite();
+  GameObject::CollisionWithWall();
   CreateShot(dt);
 }
 
@@ -41,7 +55,6 @@ void Hero::Move(float dt) {
     Message *message = new Message;
     message->type_message = TypeMessage::MOVE;
     message->who_sent = this;
-    message->move.old_position = coordinates;
     Manager::GetInstance()->SendMessage(message);
   }
 
@@ -72,36 +85,49 @@ void Hero::Move(float dt) {
   }
 }
 
-void Hero::MoveSprite() { head->setPosition(coordinates.x, coordinates.y); }
+void Hero::MoveSprite() {
+  legs_up_down->setPosition(coordinates.x, coordinates.y);
+  head->setPosition(coordinates.x,
+                    coordinates.y - legs_up_down->getLocalBounds().height +
+                        legs_up_down->getGlobalBounds().height / 11);
+}
 
 void Hero::CreateShot(float dt) {
   shot_cooldown += dt;
-  if (shot_cooldown < shot_cooldown_total)
+  if (shot_cooldown < shot_cooldown_total or
+      (not(sf::Mouse::isButtonPressed(sf::Mouse::Left) or
+           sf::Mouse::isButtonPressed(sf::Mouse::Right))))
     return;
 
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left) or
-      sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-    shot_cooldown = 0;
-    sf::Vector2i current_mouse_position =
-        sf::Mouse::getPosition(*Manager::GetInstance()->GetWindow());
-
-    current_mouse_position = MouseCoordinatesRelativeOtherCoordinates(
-        current_mouse_position, coordinates);
-
-    sf::Vector2f normalized_mouse_position =
-        NormalizationVector(current_mouse_position);
-
-    Message *message = new Message;
-    message->type_message = TypeMessage::CREATE;
-    message->create.new_object = new ShotBase(
-        coordinates, normalized_mouse_position, 200, 400, 10, TypeEffect::NONE);
-    message->create.creator = this;
-    Manager::GetInstance()->SendMessage(message);
-  }
+  shot_cooldown = 0;
+  sf::Vector2i current_mouse_position =
+      sf::Mouse::getPosition(*Manager::GetInstance()->GetWindow());
+  current_mouse_position = MouseCoordinatesRelativeOtherCoordinates(
+      current_mouse_position, head->getPosition());
+  sf::Vector2f normalized_mouse_position =
+      NormalizationVector(static_cast<sf::Vector2f>(current_mouse_position));
+  Message *message = new Message;
+  message->type_message = TypeMessage::CREATE;
+  message->create.new_object =
+      new ShotBase(head->getPosition(), normalized_mouse_position, 200, 400, 10,
+                   TypeEffect::NONE, WhoCreatedShot::PLAYER);
+  message->create.creator = this;
+  Manager::GetInstance()->SendMessage(message);
 }
 
-void Hero::Draw(sf::RenderWindow *window) const { window->draw(*head); }
+void Hero::Draw(sf::RenderWindow *window) const {
+  window->draw(*legs_up_down);
+  window->draw(*head);
+}
 
 void Hero::SendMessage(Message *message) {
-  // сюда отдается сообщение извне на обработку этим обьектом
+  // switch (message->type_message) {
+  // case TypeMessage::MOVE: {
+  // } break;
+  // case TypeMessage::DEAL_DAMAGE: {
+  //
+  // } break;
+  // default:
+  //   break;
+  // }
 }
