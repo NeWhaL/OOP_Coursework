@@ -52,7 +52,11 @@ Size_arena Manager::GetSizeArena() const { return size_arena; }
 
 void Manager::Run() {
   hero = new Hero({600, 400}, 300, 10, 0.1, 1, 2);
-  game_objects.push_back(new EnemyMelee({1000, 600}, 100, 10, 1));
+  game_objects.push_back(new EnemyMelee({1000, 600}, 250, 10, 1, 3));
+  game_objects.push_back(new EnemyMelee({800, 400}, 250, 10, 1, 3));
+  game_objects.push_back(new EnemyMelee({500, 600}, 250, 10, 1, 3));
+  game_objects.push_back(new EnemyMelee({350, 200}, 250, 10, 1, 3));
+  game_objects.push_back(new EnemyMelee({1200, 400}, 250, 10, 1, 3));
   sf::Clock time;
   while (window->isOpen()) {
     sf::Event ev;
@@ -76,6 +80,7 @@ void Manager::DrawAllObject() const {
 }
 
 void Manager::Update(float dt) {
+  AllCollisionWithObjects();
   hero->Update(dt);
   for (auto &object : game_objects)
     object->Update(dt);
@@ -95,7 +100,7 @@ void Manager::Update(float dt) {
       game_objects.erase(kill);
     } break;
     case TypeMessage::DEAL_DAMAGE: {
-      message->deal_damage.to_who->GetHealt() -= message->deal_damage.damage;
+      message->deal_damage.to_who->GetHealth() -= message->deal_damage.damage;
     } break;
     }
     if (message->type_message == TypeMessage::MOVE) {
@@ -108,4 +113,14 @@ void Manager::Update(float dt) {
   }
 }
 
+void Manager::AllCollisionWithObjects() {
+  for (auto &object : game_objects) {
+    hero->CollisionWithObject(object);
+    object->CollisionWithObject(hero);
+  }
+  for (auto &inspected_object : game_objects)
+    for (auto &object : game_objects)
+      if (inspected_object->CollisionWithObject(object))
+        break;
+}
 void Manager::SendMessage(Message *msg) { messages.push_back(msg); }

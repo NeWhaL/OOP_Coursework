@@ -3,14 +3,13 @@
 
 Shot::Shot(sf::Vector2f coordinates, sf::Vector2f direction, float speed,
            float range_fire, float damage, TypeEffect effect,
-           WhoCreatedShot who)
-    : GameObject(coordinates, speed, 1), direction(direction), damage(damage),
-      range_fire(range_fire), effect(effect), sprite(nullptr), creator(who) {
-  sprite = new sf::Sprite;
-  sprite->setTexture(*ResourceManager::GetInstance()->getTShot());
-  sf::FloatRect bounds_shot = sprite->getLocalBounds();
-  sprite->setOrigin(bounds_shot.width / 2, bounds_shot.height / 2);
-  radius_hitbox = bounds_shot.height / 2;
+           TypeObject who_creator)
+    : GameObject(coordinates, speed, 1,
+                 ResourceManager::GetInstance()->getTShot(), 1),
+      direction(direction), damage(damage), range_fire(range_fire),
+      effect(effect), creator(who_creator) {
+  type = TypeObject::SHOT;
+  amount_sprite = 1;
 }
 
 void Shot::Update(float dt) {
@@ -22,10 +21,10 @@ void Shot::Update(float dt) {
 void Shot::CollisionWithWall() {
   Manager *manager = Manager::GetInstance();
   Size_arena tmp_size = manager->GetSizeArena();
-  if (not(coordinates.x - radius_hitbox < tmp_size.up_left.x or
-          coordinates.x + radius_hitbox > tmp_size.down_right.x or
-          coordinates.y - radius_hitbox < tmp_size.up_left.y or
-          coordinates.y + radius_hitbox > tmp_size.down_right.y))
+  if (not(coordinates.x - radius_hitbox_head < tmp_size.up_left.x or
+          coordinates.x + radius_hitbox_head > tmp_size.down_right.x or
+          coordinates.y - radius_hitbox_head < tmp_size.up_left.y or
+          coordinates.y + radius_hitbox_head > tmp_size.down_right.y))
     return;
   Message *message = new Message;
   message->type_message = TypeMessage::DEATH;
@@ -33,6 +32,40 @@ void Shot::CollisionWithWall() {
   message->death.killer = nullptr;
   message->death.who_die = this;
   manager->SendMessage(message);
+}
+
+bool Shot::CollisionWithObject(GameObject *object) {
+  if ((object == Manager::GetInstance()->GetHero() and
+       creator == TypeObject::PLAYER) or
+      object == this or type == object->GetTypeObject() or
+      (creator == object->GetTypeObject()))
+    return false;
+  if (not GameObject::CollisionWithObject(object))
+    return false;
+  Manager *manager = Manager::GetInstance();
+  Message *message_deal_damage = new Message;
+  message_deal_damage->who_sent = this;
+  message_deal_damage->type_message = TypeMessage::DEAL_DAMAGE;
+  message_deal_damage->deal_damage.damage = damage;
+  message_deal_damage->deal_damage.to_who = object;
+  manager->SendMessage(message_deal_damage);
+
+  Message *message_death_shot = new Message;
+  message_death_shot->who_sent = this;
+  message_death_shot->type_message = TypeMessage::DEATH;
+  message_death_shot->death.killer = this;
+  message_death_shot->death.who_die = this;
+  manager->SendMessage(message_death_shot);
+
+  if (object->GetHealth() > 0)
+    return true;
+  Message *message_death_object = new Message;
+  message_death_object->who_sent = object;
+  message_death_object->type_message = TypeMessage::DEATH;
+  message_death_object->death.killer = this;
+  message_death_object->death.who_die = object;
+  manager->SendMessage(message_death_object);
+  return true;
 }
 
 void Shot::Move(float dt) {
@@ -51,10 +84,12 @@ void Shot::Move(float dt) {
   Manager::GetInstance()->SendMessage(message);
 }
 
-void Shot::MoveSprite() { sprite->setPosition(coordinates.x, coordinates.y); }
+void Shot::MoveSprite() {
+  main_sprite->setPosition(coordinates.x, coordinates.y);
+}
 
 void Shot::SendMessage(Message *message) {}
 
-void Shot::Draw(sf::RenderWindow *window) const { window->draw(*sprite); }
+void Shot::Draw(sf::RenderWindow *window) const { window->draw(*main_sprite); }
 
-Shot::~Shot() { delete sprite; }
+Shot::~Shot() {}

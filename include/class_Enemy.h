@@ -1,5 +1,5 @@
-#ifndef ENEMY
-#define ENEMY
+#ifndef ENM
+#define ENM
 #include "class_GameObject.h"
 
 class Enemy : public GameObject {
@@ -13,7 +13,7 @@ protected:
 
 public:
   Enemy(sf::Vector2f coordinates, float speed, float health,
-        float attack_cooldown);
+        float attack_cooldown, float damage, sf::Texture *main_texture);
   virtual ~Enemy();
   virtual void Move(float dt) override;
 };

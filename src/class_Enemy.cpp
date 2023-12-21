@@ -2,9 +2,9 @@
 #include "../include/class_Manager.h"
 
 Enemy::Enemy(sf::Vector2f coordinates, float speed, float health,
-             float attack_cooldown)
-    : GameObject(coordinates, speed, health), attack_cooldown(attack_cooldown),
-      direction({0, 0}) {}
+             float attack_cooldown, float damage, sf::Texture *main_texture)
+    : GameObject(coordinates, speed, health, main_texture, 8),
+      attack_cooldown(attack_cooldown), damage(damage), direction({0, 0}) {}
 
 Enemy::~Enemy() {}
 
@@ -19,9 +19,10 @@ void Enemy::Move(float dt) {
 }
 
 bool Enemy::CollisionWithObject(GameObject *object) {
+  if (object == this or object != Manager::GetInstance()->GetHero())
+    return false;
   Manager *manager = Manager::GetInstance();
-  object = manager->GetHero();
-  direction = object->GetPosition() - coordinates;
+  direction = object->GetPositionHead() - coordinates;
   direction = NormalizationVector(direction);
   if (GameObject::CollisionWithObject(object)) {
     direction.x *= -1;

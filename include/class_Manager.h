@@ -25,6 +25,7 @@ private:
   ~Manager();
   Manager(const Manager &){};
   void DrawAllObject() const;
+  void AllCollisionWithObjects();
   void Update(float dt);
   void EventProcessing(sf::Event &ev);
   static void Destroy();
