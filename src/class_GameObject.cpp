@@ -3,8 +3,8 @@
 
 GameObject::GameObject() {}
 
-GameObject::GameObject(sf::Vector2f coordinates, float speed)
-    : coordinates(coordinates), speed(speed) {}
+GameObject::GameObject(sf::Vector2f coordinates, float speed, float health)
+    : coordinates(coordinates), speed(speed), health(health) {}
 
 GameObject::~GameObject() {}
 
@@ -33,4 +33,7 @@ void GameObject::CollisionWithWall() {
   coordinates.y += d_y;
 }
 
-void GameObject::CollisionWithObject() {}
+bool GameObject::CollisionWithObject(GameObject *object) {
+  return radius_hitbox + object->radius_hitbox >=
+         LengthBetweenTwoPoints(coordinates, object->coordinates);
+}

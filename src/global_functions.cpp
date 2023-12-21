@@ -18,5 +18,7 @@ MouseCoordinatesRelativeOtherCoordinates(Vector2i coordinates_mouse,
 }
 
 float LengthBetweenTwoPoints(Vector2f first_point, Vector2f second_point) {
-  return sqrt(first_point.x * second_point.x + first_point.y * second_point.y);
+  return sqrt(
+      (first_point.x - second_point.x) * (first_point.x - second_point.x) +
+      (first_point.y - second_point.y) * (first_point.y - second_point.y));
 }

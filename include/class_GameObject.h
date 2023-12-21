@@ -10,18 +10,20 @@ struct Message;
 
 class GameObject {
 protected:
+  float health;
   float speed;
   sf::Vector2f coordinates;
   float radius_hitbox;
 
   void SetPosition(sf::Vector2f coordinates);
   virtual void Move(float dt) = 0;
+  virtual void MoveSprite() = 0;
   virtual void CollisionWithWall();
-  virtual void CollisionWithObject() = 0;
+  virtual bool CollisionWithObject(GameObject *object) = 0;
 
 public:
   GameObject();
-  GameObject(sf::Vector2f coordinates, float speed);
+  GameObject(sf::Vector2f coordinates, float speed, float health);
   sf::Vector2f GetPosition() const;
   virtual ~GameObject();
   float GetRadiusHitbox() const;

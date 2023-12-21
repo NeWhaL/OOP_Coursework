@@ -27,6 +27,9 @@ void EnemyMelee::MoveSprite() {
 void EnemyMelee::Draw(sf::RenderWindow *window) const { window->draw(*head); }
 
 void EnemyMelee::Update(float dt) {
+  cooldown_counter_time += dt;
+  Hero *hero = Manager::GetInstance()->GetHero();
+  CollisionWithObject(hero);
   Move(dt);
   MoveSprite();
   GameObject::CollisionWithWall();
@@ -38,4 +41,8 @@ void EnemyMelee::SendMessage(Message *message) {
     if (message->who_sent == this)
       return;
   }
+}
+
+bool EnemyMelee::CollisionWithObject(GameObject *object) {
+  return Enemy::CollisionWithObject(object);
 }

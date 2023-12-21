@@ -8,3 +8,5 @@ ShotBase::ShotBase(sf::Vector2f coordinates, sf::Vector2f direction,
 void ShotBase::SendMessage(Message *message) {}
 
 ShotBase::~ShotBase(){};
+
+bool ShotBase::CollisionWithObject(GameObject *object) { return true; }

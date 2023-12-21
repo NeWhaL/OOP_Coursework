@@ -5,12 +5,14 @@
 
 class ShotBase : public Shot {
 private:
+  bool CollisionWithObject(GameObject *object) override;
+
 public:
   ShotBase(sf::Vector2f coordinates, sf::Vector2f direction, float speed,
            float range_fire, float damage, TypeEffect effect,
            WhoCreatedShot who);
   virtual ~ShotBase();
-  void SendMessage(Message *message);
+  void SendMessage(Message *message) override;
 };
 
 #endif

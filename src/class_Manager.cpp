@@ -52,7 +52,7 @@ Size_arena Manager::GetSizeArena() const { return size_arena; }
 
 void Manager::Run() {
   hero = new Hero({600, 400}, 300, 10, 0.1, 1, 2);
-  game_objects.push_back(new EnemyMelee({1000, 600}, 200, 10, 1));
+  game_objects.push_back(new EnemyMelee({1000, 600}, 100, 10, 1));
   sf::Clock time;
   while (window->isOpen()) {
     sf::Event ev;
@@ -69,9 +69,9 @@ void Manager::End() { delete window; }
 void Manager::DrawAllObject() const {
   window->clear();
   window->draw(*sprite_room);
+  hero->Draw(window);
   for (const auto &i : game_objects)
     i->Draw(window);
-  hero->Draw(window);
   window->display();
 }
 
@@ -94,9 +94,11 @@ void Manager::Update(float dt) {
       delete *kill;
       game_objects.erase(kill);
     } break;
+    case TypeMessage::DEAL_DAMAGE: {
+      message->deal_damage.to_who->GetHealt() -= message->deal_damage.damage;
+    } break;
     }
-    if (message->type_message == TypeMessage::MOVE or
-        message->type_message == TypeMessage::DEAL_DAMAGE) {
+    if (message->type_message == TypeMessage::MOVE) {
       hero->SendMessage(message);
       for (auto i : game_objects) {
         i->SendMessage(message);

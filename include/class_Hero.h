@@ -7,7 +7,6 @@
 
 class Hero : public GameObject {
 private:
-  float health;
   float damage;
   float shot_cooldown_total;
   float shot_cooldown;
@@ -22,9 +21,9 @@ private:
   sf::Sprite *legs_right;
 
   void Move(float dt) override;
-  void MoveSprite();
+  void MoveSprite() override;
   void CreateShot(float dt);
-  void CollisionWithObject() override;
+  bool CollisionWithObject(GameObject *object) override;
 
 public:
   Hero(sf::Vector2f coordinates, float speed, float health,

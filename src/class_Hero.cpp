@@ -3,9 +3,10 @@
 
 Hero::Hero(sf::Vector2f coordinates, float speed, float health,
            float shot_cooldown_total, float melee_cooldown_total, float damage)
-    : GameObject(coordinates, speed), shot_cooldown_total(shot_cooldown_total),
-      melee_cooldown_total(melee_cooldown_total), health(health),
-      shot_cooldown(0), melee_cooldown(0), damage(damage) {
+    : GameObject(coordinates, speed, health),
+      shot_cooldown_total(shot_cooldown_total),
+      melee_cooldown_total(melee_cooldown_total), shot_cooldown(0),
+      melee_cooldown(0), damage(damage) {
   ResourceManager *RM = ResourceManager::GetInstance();
   head = new sf::Sprite;
   legs_up_down = new sf::Sprite;
@@ -118,6 +119,12 @@ void Hero::CreateShot(float dt) {
 void Hero::Draw(sf::RenderWindow *window) const {
   window->draw(*legs_up_down);
   window->draw(*head);
+}
+
+bool Hero::CollisionWithObject(GameObject *object) {
+  // if (radius_hitbox + object->GetRadiusHitbox() <
+  //     LengthBetweenTwoPoints(coordinates, object->GetPosition()))
+  return true;
 }
 
 void Hero::SendMessage(Message *message) {

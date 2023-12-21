@@ -4,17 +4,17 @@
 
 class Enemy : public GameObject {
 protected:
-  float health;
   sf::Vector2f direction;
   float damage;
   float attack_cooldown;
+  float cooldown_counter_time = 0;
+
+  virtual bool CollisionWithObject(GameObject *object) override;
 
 public:
   Enemy(sf::Vector2f coordinates, float speed, float health,
         float attack_cooldown);
   virtual ~Enemy();
-  virtual void Draw(sf::RenderWindow *window) const = 0;
-  virtual void Move(float dt);
-  virtual void MoveSprite() = 0;
+  virtual void Move(float dt) override;
 };
 #endif

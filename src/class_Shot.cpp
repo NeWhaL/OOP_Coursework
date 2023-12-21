@@ -4,7 +4,7 @@
 Shot::Shot(sf::Vector2f coordinates, sf::Vector2f direction, float speed,
            float range_fire, float damage, TypeEffect effect,
            WhoCreatedShot who)
-    : GameObject(coordinates, speed), direction(direction), damage(damage),
+    : GameObject(coordinates, speed, 1), direction(direction), damage(damage),
       range_fire(range_fire), effect(effect), sprite(nullptr), creator(who) {
   sprite = new sf::Sprite;
   sprite->setTexture(*ResourceManager::GetInstance()->getTShot());
