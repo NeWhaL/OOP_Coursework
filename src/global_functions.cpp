@@ -1,4 +1,5 @@
 #include "../include/global_functions.h"
+#include "../include/class_GameObject.h"
 
 using namespace sf;
 
@@ -21,4 +22,19 @@ float LengthBetweenTwoPoints(Vector2f first_point, Vector2f second_point) {
   return sqrt(
       (first_point.x - second_point.x) * (first_point.x - second_point.x) +
       (first_point.y - second_point.y) * (first_point.y - second_point.y));
+}
+
+std::ostream& operator << (std::ostream &os, const TypeObject &type)
+{
+	if (type == TypeObject::PLAYER)
+		return os << "PLAYER";
+	else if (type == TypeObject::SHOT)	
+		return os << "SHOT";
+	else if (type == TypeObject::ENEMY)
+		return os << "ENEMY";
+	else if (type == TypeObject::EFFECT)
+		return os << "EFFECT";
+	else if (type == TypeObject::ITEM)
+		return os << "ITEM";
+	return os << "NONE";
 }

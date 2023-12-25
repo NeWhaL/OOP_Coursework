@@ -3,9 +3,11 @@
 
 #include "main.h"
 
+enum class TypeObject;
+enum class TypeEffect;
 class GameObject;
 
-enum class TypeMessage { MOVE, CREATE, DEATH, DEAL_DAMAGE };
+enum class TypeMessage { MOVE, CREATE, DEATH, EFFECT };
 
 struct Message {
   GameObject *who_sent;
@@ -13,22 +15,24 @@ struct Message {
 
   Message() : who_sent(nullptr){};
 
-  union {
-    struct {
-      // GameObject *who_goes;
-    } move;
-    struct {
-      GameObject *new_object;
-      GameObject *creator;
-    } create;
-    struct {
-      GameObject *who_die;
-      GameObject *killer;
-    } death;
-    struct {
-      float damage;
-      GameObject *to_who;
-    } deal_damage;
+  union 
+  {
+     struct 
+	  {
+       GameObject *new_object;
+       GameObject *creator;
+     } create;
+     struct 
+	  {
+       GameObject *who_die;
+       GameObject *killer;
+     } death;
+	  struct 
+	  {
+		 TypeEffect type;
+		 TypeObject creator;
+		 float damage;
+	  } effect;
   };
 };
 #endif

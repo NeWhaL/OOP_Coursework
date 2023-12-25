@@ -6,10 +6,32 @@ ShotBase::ShotBase(sf::Vector2f coordinates, sf::Vector2f direction,
     : Shot(coordinates, direction, speed, range_fire, damage, effect,
            who_creator) {}
 
-void ShotBase::SendMessage(Message *message) {}
+bool ShotBase::CollisionWithObject(GameObject *object) 
+{
+	if (not GameObject::CollisionWithObject(object))
+		return false; 
+	switch(object->GetTypeObject())
+	{
+		case TypeObject::PLAYER:
+		{
+			if (creator == TypeObject::PLAYER)
+				return false;
+			DeathObject(object);
+		} break;
+		case TypeObject::ENEMY:
+		{
+			if (creator == TypeObject::ENEMY)
+				return false;
+			DeathObject(object);
+		} break;
+		default: break;
+	}
+   return true;
+}
 
-ShotBase::~ShotBase(){};
-
-bool ShotBase::CollisionWithObject(GameObject *object) {
-  return Shot::CollisionWithObject(object);
+void ShotBase::SendMessage(Message *message) 
+{
+	if (message->type_message != TypeMessage::MOVE or message->who_sent == this) 
+		return;
+	CollisionWithObject(message->who_sent);
 }

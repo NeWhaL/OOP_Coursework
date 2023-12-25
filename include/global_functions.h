@@ -3,6 +3,8 @@
 
 #include "main.h"
 
+enum class TypeObject;
+
 sf::Vector2f NormalizationVector(sf::Vector2f vector);
 float LengthVector(sf::Vector2f vector);
 sf::Vector2i
@@ -11,4 +13,5 @@ MouseCoordinatesRelativeOtherCoordinates(sf::Vector2i coordinates_mouse,
 float LengthBetweenTwoPoints(sf::Vector2f first_point,
                              sf::Vector2f second_point);
 
+std::ostream& operator << (std::ostream &os, const TypeObject &type);
 #endif
