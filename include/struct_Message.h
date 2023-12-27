@@ -27,6 +27,7 @@ struct Message {
 	  {
         GameObject *who_die;
         GameObject *killer;
+		  int money;
      } death;
 	  struct 
 	  {

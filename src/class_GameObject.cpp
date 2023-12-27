@@ -3,7 +3,7 @@
 
 GameObject::GameObject(sf::Vector2f coordinates, float speed, float health,
                        sf::Texture *main_texture, int amount_sprite, float damage)
-    : coordinates(coordinates), speed(speed), health(health),
+    : coordinates(coordinates), speed(speed), health(health), amount_money(0),
       main_sprite(new sf::Sprite), amount_sprite(amount_sprite), damage(damage), is_object_alive(true)
 {
 	manager = Manager::GetInstance();
@@ -26,6 +26,8 @@ float GameObject::GetRadiusHitbox() const { return radius_hitbox_head; }
 sf::Vector2f GameObject::GetPosition() const { return coordinates; }
 
 sf::Vector2f GameObject::GetPositionHead() const { return main_sprite->getPosition(); }
+
+int& GameObject::GetMoney() { return amount_money; }
 
 float GameObject::GetDamage() const { return damage; }
 
@@ -61,6 +63,7 @@ void GameObject::DeathObject(GameObject* killer)
 	message->who_sent = this;
 	message->death.killer = killer;
 	message->death.who_die = this;
+	message->death.money = amount_money;
 	manager->SendMessage(message);
 	is_object_alive = false;
 }

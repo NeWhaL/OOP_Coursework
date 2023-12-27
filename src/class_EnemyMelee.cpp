@@ -5,6 +5,7 @@ EnemyMelee::EnemyMelee(sf::Vector2f coordinates, float speed, float health, floa
     : Enemy(coordinates, speed, health, damage, ResourceManager::GetInstance()->getTHeroHead()) {
   type_object = TypeObject::ENEMY;
   amount_sprite = 8;
+  amount_money = 1;
 }
 
 EnemyMelee::~EnemyMelee() {}

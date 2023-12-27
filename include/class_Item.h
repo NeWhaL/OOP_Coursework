@@ -10,18 +10,15 @@ enum class TypeItem { SHOT, EFFECT, STAT };
 class Item : public GameObject 
 {
 protected:
-	int cost;
 	TypeItem type_item;
-	float damage;
-	float health;
-	float range_fire;
-	float speed;
+	float stat_damage;
+	float stat_health;
+	float stat_range_fire;
+	float stat_speed;
 	TypeEffect type_effect;
 	TypeShot type_shot;
 
-	bool CollisionWithObject(GameObject *object);
 	void Move(float dt) {}
-	void Buy();
 
 public:
 	Item(sf::Vector2f coordinates, sf::Texture* texture, TypeItem type_item, TypeShot type_shot, TypeEffect type_effect,

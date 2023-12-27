@@ -15,6 +15,7 @@ protected:
   Manager* manager;
   TypeObject type_object;
   TypeObject creator;
+  int amount_money;
   float health;
   float speed;
   float damage;
@@ -35,6 +36,7 @@ public:
   GameObject(sf::Vector2f coordinates, float speed, float health,
              sf::Texture *main_texture, int amount_sprite, float damage);
   virtual ~GameObject();
+  int& GetMoney();
   TypeObject GetTypeObject() const;
   TypeObject GetCreatorObject() const;
   sf::Vector2f GetPosition() const;

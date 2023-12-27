@@ -8,7 +8,6 @@
 class Hero : public GameObject 
 {
 private:
-	int amount_money;
    float shot_cooldown_total;
    float shot_cooldown;
    int amount_sprite_legs_up_down = 10;

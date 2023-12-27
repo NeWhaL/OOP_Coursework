@@ -98,8 +98,8 @@ void Manager::Update(float dt)
 				break;
 			case TypeMessage::DEATH:
 			{
-				auto kill = std::find(game_objects.begin(), game_objects.end(),
-										 message->death.who_die);
+				hero->GetMoney() += message->death.money;	
+				auto kill = std::find(game_objects.begin(), game_objects.end(), message->death.who_die);
 				delete *kill;
 				game_objects.erase(kill);
 			} break;

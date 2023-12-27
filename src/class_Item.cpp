@@ -3,9 +3,10 @@
 
 Item::Item(sf::Vector2f coordinates, sf::Texture* texture, TypeItem type_item, TypeShot type_shot, TypeEffect type_effect, 
 			  float damage, float health, float speed, float range_fire, int cost):
-			  GameObject(coordinates, 0, 0, texture, 1, 0), type_item(type_item), cost(cost), type_effect(type_effect),
-			  type_shot(type_shot), damage(damage), health(health), speed(speed), range_fire(range_fire) 
+			  GameObject(coordinates, 0, 0, texture, 1, 0), type_item(type_item), type_effect(type_effect),
+			  type_shot(type_shot), stat_damage(damage), stat_health(health), stat_speed(speed), stat_range_fire(range_fire) 
 {
+	amount_money = 5;
 	main_sprite->setScale(0.15, 0.15);
 	radius_hitbox_head = main_sprite->getGlobalBounds().height / 2;
 }
@@ -21,25 +22,17 @@ void Item::SendMessage(Message* message)
 		return;
 	if (not GameObject::CollisionWithObject(message->who_sent))
 		return;
+	if (amount_money > message->who_sent->GetMoney())
+		return;
 	Message* message_item = new Message;
 	message_item->who_sent = this;
 	message_item->type_message = TypeMessage::ITEM;
 	message_item->item.type_shot = type_shot;
 	message_item->item.type_effect = type_effect;
-	message_item->item.health = health;
-	message_item->item.damage = damage;
-	message_item->item.speed = speed;
-	message_item->item.range_fire = range_fire;
+	message_item->item.health = stat_health;
+	message_item->item.damage = stat_damage;
+	message_item->item.speed = stat_speed;
+	message_item->item.range_fire = stat_range_fire;
 	manager->SendMessage(message_item);
 	GameObject::DeathObject(message->who_sent);	
-}
-
-void Item::Buy()
-{
-
-}
-
-bool Item::CollisionWithObject(GameObject *object)
-{
-	return true;
 }
