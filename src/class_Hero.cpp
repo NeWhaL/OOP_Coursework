@@ -1,11 +1,12 @@
 #include "../include/class_Hero.h"
 #include "../include/class_Manager.h"
 
+
 Hero::Hero(sf::Vector2f coordinates, float speed, float health,
            float shot_cooldown_total, float melee_cooldown_total, float damage):
 			  GameObject(coordinates, speed, health, ResourceManager::GetInstance()->getTHeroHead(), 8, damage),
 			  shot_cooldown_total(shot_cooldown_total), shot_cooldown(0),
-			  current_effect_shot(TypeEffect::EXPLOSION), range_fire_shot(400), speed_shot(350)
+			  current_effect_shot(TypeEffect::NONE), range_fire_shot(400), speed_shot(350)
 {
 	type_object = TypeObject::PLAYER;
 	creator = TypeObject::NONE;
@@ -32,25 +33,21 @@ Hero::Hero(sf::Vector2f coordinates, float speed, float health,
 	legs_up_down->setOrigin(bounds_legs_up_down.width / amount_sprite_legs_up_down / 2,
                            bounds_legs_up_down.height / 2);
 	radius_hitbox_legs = legs_up_down->getGlobalBounds().height / 2;
-	
-	// view->reset(sf::FloatRect(0, 0, 640, 480));
-	// view->setCenter(coordinates);
 }
 
 Hero::~Hero() 
 {
-   delete legs_up_down;
+	delete legs_up_down;
    delete legs_right;
    delete legs_left;
 }
 
 void Hero::Update(float dt) 
-{ 
+{
 	Move(dt);
    MoveSprite();
    GameObject::CollisionWithWall();
    CreateShot(dt);
-	// view->setCenter(coordinates);
 }
 
 void Hero::Move(float dt) 
@@ -145,11 +142,6 @@ bool Hero::CollisionWithObject(GameObject *object)
 		if (health <= 0)
 			DeathObject(object);
 	}
-	else
-	{
-		// ITEM
-	}
-
    return true;
 }
 
@@ -178,12 +170,20 @@ void Hero::SendMessage(Message *message)
 				 default: break;
 			 }
 	   }
+		case TypeMessage::ITEM:
+		{
+			damage += message->item.damage;
+			speed += message->item.speed;
+			range_fire_shot += message->item.range_fire;
+			health += message->item.health;
+			current_effect_shot = message->item.type_effect;
+			current_type_shot = message->item.type_shot;
+		}
 	   default: break;
    }
 }
 
 void Hero::DeathObject(GameObject* killer)
 {
-	GameObject::DeathObject(killer);
 	// добавить выход из игры если герой погиб
 }

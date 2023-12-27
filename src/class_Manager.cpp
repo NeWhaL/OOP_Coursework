@@ -1,10 +1,10 @@
 #include "../include/class_Manager.h"
-#include "../include/global_functions.h"
 
 Manager *Manager::manager = nullptr;
 
 Manager::Manager(): game_objects(), messages(), sprite_room(new sf::Sprite(*ResourceManager::GetInstance()->getTRoom())),
-						  window(new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "GAME", sf::Style::Fullscreen))
+						  window(new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "GAME", sf::Style::Fullscreen)), cooldown_wave(5),
+						  time_until_the_next_wave(0), amount_wave(0)
 {
 	// размеры поля
 	size_arena.up_left.x = 320;
@@ -50,39 +50,41 @@ Hero *Manager::GetHero() const { return hero; }
 
 Size_arena Manager::GetSizeArena() const { return size_arena; }
 
-void Manager::Run() {
-  hero = new Hero({600, 400}, 300, 10, 0.1, 1, 2);
-  game_objects.push_back(new EnemyMelee({1000, 600}, 250, 10, 3));
-  game_objects.push_back(new EnemyMelee({800, 400}, 250, 10, 3));
-  // game_objects.push_back(new EnemyMelee({500, 600}, 250, 10, 3));
-  // game_objects.push_back(new EnemyMelee({350, 200}, 250, 10, 3));
-  // game_objects.push_back(new EnemyMelee({1200, 400}, 250, 10, 3));
-  sf::Clock time;
-  while (window->isOpen()) {
-    sf::Event ev;
-    float dt = time.getElapsedTime().asSeconds();
-    time.restart();
-    EventProcessing(ev);
-    Update(dt);
-    DrawAllObject();
-  }
+void Manager::Run() 
+{
+   hero = new Hero({600, 400}, 300, 10, 0.1, 1, 2);
+   game_objects.push_back(new Item({1200, 300}, ResourceManager::GetInstance()->getTEffectBomb(), TypeItem::EFFECT,
+ 								  TypeShot::NONE, TypeEffect::EXPLOSION, 0, 0, 0, 0, 0));
+   sf::Clock time;
+   while (window->isOpen()) 
+	{
+      sf::Event ev;
+      float dt = time.getElapsedTime().asSeconds();
+      time.restart();
+      EventProcessing(ev);
+      Update(dt);
+      DrawAllObject();
+   }
 }
 
 void Manager::End() { Destroy(); }
 
-void Manager::DrawAllObject() const {
-  window->clear();
-  window->draw(*sprite_room);
-  hero->Draw(window);
-  for (const auto &i : game_objects)
-    i->Draw(window);
-  window->display();
+void Manager::DrawAllObject() const 
+{
+   window->clear();
+   window->draw(*sprite_room);
+   hero->Draw(window);
+   for (const auto &i : game_objects)
+     i->Draw(window);
+   window->display();
 }
 
-void Manager::Update(float dt) {
+void Manager::Update(float dt) 
+{
    hero->Update(dt);
    for (auto &object : game_objects)
       object->Update(dt);
+	CreateWaveEnemies(dt);
 
    Message *message;
    while (not messages.empty()) 
@@ -113,3 +115,18 @@ void Manager::Update(float dt) {
 }
 
 void Manager::SendMessage(Message *msg) { messages.push_back(msg); }
+
+void Manager::CreateWaveEnemies(float dt)
+{
+	time_until_the_next_wave += dt;
+	if (cooldown_wave > time_until_the_next_wave)
+		return;
+	int amount_enemy = 3;
+	for (int i = 0; i < amount_enemy + amount_wave; i++)
+	{
+		game_objects.push_back(new EnemyMelee({static_cast<float>(std::rand() % 1500 + 400), 
+									  static_cast<float>(std::rand() % 500 + 400)}, 150, 10, 3));
+	}
+	time_until_the_next_wave = 0;
+	amount_wave++;
+}

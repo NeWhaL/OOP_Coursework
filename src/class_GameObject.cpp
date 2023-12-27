@@ -27,8 +27,6 @@ sf::Vector2f GameObject::GetPosition() const { return coordinates; }
 
 sf::Vector2f GameObject::GetPositionHead() const { return main_sprite->getPosition(); }
 
-float &GameObject::GetHealth() { return health; }
-
 float GameObject::GetDamage() const { return damage; }
 
 void GameObject::CollisionWithWall() 

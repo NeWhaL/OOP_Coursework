@@ -4,6 +4,7 @@
 #include "class_EnemyMelee.h"
 #include "class_GameObject.h"
 #include "class_Hero.h"
+#include "class_Item.h"
 
 struct Size_arena 
 {
@@ -21,6 +22,9 @@ private:
    std::list<Message *> messages;
    sf::Sprite *sprite_room; 
    Size_arena size_arena;
+	float cooldown_wave; 
+	float time_until_the_next_wave;
+	int amount_wave;
 
    Manager();
    ~Manager();
@@ -28,6 +32,7 @@ private:
    void DrawAllObject() const;
    void Update(float dt);
    void EventProcessing(sf::Event &ev);
+	void CreateWaveEnemies(float dt);
    static void Destroy();
 
 public:

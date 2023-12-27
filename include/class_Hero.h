@@ -8,11 +8,15 @@
 class Hero : public GameObject 
 {
 private:
+	int amount_money;
    float shot_cooldown_total;
    float shot_cooldown;
    int amount_sprite_legs_up_down = 10;
    float radius_hitbox_legs;
 	TypeEffect current_effect_shot;	
+	TypeShot current_type_shot;
+	std::vector<TypeShot> all_types_shot;
+	std::vector<TypeEffect> all_types_effect_shot;
 	float range_fire_shot;
 	float speed_shot;
 	float cooldown_take_time;

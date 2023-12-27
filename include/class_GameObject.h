@@ -6,7 +6,6 @@
 #include "main.h"
 #include "struct_Message.h"
 
-struct Message;
 class Manager;
 
 enum class TypeObject { NONE, PLAYER, ENEMY, SHOT, ITEM, EFFECT };
@@ -41,7 +40,6 @@ public:
   sf::Vector2f GetPosition() const;
   sf::Vector2f GetPositionHead() const;
   float GetRadiusHitbox() const;
-  float &GetHealth();
   float GetDamage() const;
   virtual void Draw(sf::RenderWindow *window) const;
   virtual void Update(float dt) = 0;

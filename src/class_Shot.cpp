@@ -26,7 +26,6 @@ void Shot::CollisionWithWall()
           coordinates.y - radius_hitbox_head < tmp_size.up_left.y or
           coordinates.y + radius_hitbox_head > tmp_size.down_right.y))
    return;
-	std::cout << "удаление обьекта в CollisionWithWall()\n";
 	DeathObject(this);
 }
 
@@ -44,8 +43,6 @@ void Shot::Move(float dt)
 	manager->SendMessage(message);
    if (range_fire > 0)
      return;
-
-	std::cout << "удаление обьекта в Move()\n";
    DeathObject(this);
 }
 
