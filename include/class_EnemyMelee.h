@@ -6,17 +6,13 @@
 class EnemyMelee : public Enemy 
 {
 private:
-	sf::Sprite *body;
-	int amount_sprite_body = 10;
-
 	void Move(float dt) override;
-	void MoveSprite() override;
+	bool CollisionWithObject(GameObject *object) override;
 
 public:
 	EnemyMelee(sf::Vector2f coordinates, float speed, float health, float damage);
-	~EnemyMelee();
+	~EnemyMelee() = default;
 	void SendMessage(Message *message) override;
 	void Update(float dt) override;
-	bool CollisionWithObject(GameObject *object) override;
 };
 #endif

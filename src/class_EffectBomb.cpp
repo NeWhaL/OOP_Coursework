@@ -18,20 +18,13 @@ void EffectBomb::Update(float dt)
 
 void EffectBomb::Action(float dt) 
 {
-	if (action_time <= total_time)
-		DeathObject(this);
+	if (action_time <= total_time) DeathObject(this);
 	if (total_time != 0)
 	{
 		total_time += dt;
 		return;
 	}
-	Message* message = new Message;
-	message->type_message = TypeMessage::EFFECT;
-	message->who_sent = this;
-	message->effect.creator = creator;
-	message->effect.type = TypeEffect::EXPLOSION;
-	message->effect.damage = damage;
-	manager->SendMessage(message);
+	Message::ActionEffect(this, creator, TypeEffect::EXPLOSION, damage, manager);
 	total_time += dt;
 }
 

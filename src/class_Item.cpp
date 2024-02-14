@@ -18,21 +18,11 @@ void Item::Update(float dt)
 
 void Item::SendMessage(Message* message)
 {
-	if (message->who_sent->GetTypeObject() != TypeObject::PLAYER)
+	if (message->who_sent->GetTypeObject() != TypeObject::PLAYER or
+		  not GameObject::CollisionWithObject(message->who_sent) or
+			amount_money > message->who_sent->GetMoney())
 		return;
-	if (not GameObject::CollisionWithObject(message->who_sent))
-		return;
-	if (amount_money > message->who_sent->GetMoney())
-		return;
-	Message* message_item = new Message;
-	message_item->who_sent = this;
-	message_item->type_message = TypeMessage::ITEM;
-	message_item->item.type_shot = type_shot;
-	message_item->item.type_effect = type_effect;
-	message_item->item.health = stat_health;
-	message_item->item.damage = stat_damage;
-	message_item->item.speed = stat_speed;
-	message_item->item.range_fire = stat_range_fire;
-	manager->SendMessage(message_item);
+	Message::BuyItem(this, type_shot, type_effect, stat_health, stat_damage,
+					 stat_speed, stat_range_fire, manager);
 	GameObject::DeathObject(message->who_sent);	
 }

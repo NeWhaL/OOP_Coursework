@@ -2,9 +2,15 @@
 #include "../include/class_Manager.h"
 
 GameObject::GameObject(sf::Vector2f coordinates, float speed, float health,
-                       sf::Texture *main_texture, int amount_sprite, float damage)
-    : coordinates(coordinates), speed(speed), health(health), amount_money(0),
-      main_sprite(new sf::Sprite), amount_sprite(amount_sprite), damage(damage), is_object_alive(true)
+                       sf::Texture *main_texture, int amount_sprite, float damage):
+			coordinates(coordinates),
+		  speed(speed),
+		  health(health),
+			amount_money(0),
+      main_sprite(new sf::Sprite),
+		  amount_sprite(amount_sprite),
+		  damage(damage),
+		  is_object_alive(true)
 {
 	manager = Manager::GetInstance();
 	main_sprite->setTexture(*main_texture);
@@ -56,15 +62,8 @@ bool GameObject::CollisionWithObject(GameObject *object)
 
 void GameObject::DeathObject(GameObject* killer)
 {
-	if (not is_object_alive)
-		return;
-	Message* message = new Message;
-	message->type_message = TypeMessage::DEATH;
-	message->who_sent = this;
-	message->death.killer = killer;
-	message->death.who_die = this;
-	message->death.money = amount_money;
-	manager->SendMessage(message);
+	if (not is_object_alive) return;
+	Message::Death(this, killer, amount_money, manager);
 	is_object_alive = false;
 }
 

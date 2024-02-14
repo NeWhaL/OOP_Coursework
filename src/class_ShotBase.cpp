@@ -8,28 +8,22 @@ bool ShotBase::CollisionWithObject(GameObject *object)
 {
 	if (not GameObject::CollisionWithObject(object))
 		return false; 
+	bool is_collision = false;
 	switch(object->GetTypeObject())
 	{
 		case TypeObject::PLAYER:
-		{
-			if (creator == TypeObject::PLAYER)
-				return false;
-			DeathObject(object);
-		} break;
+			is_collision = creator != TypeObject::PLAYER; break;
 		case TypeObject::ENEMY:
-		{
-			if (creator == TypeObject::ENEMY)
-				return false;
-			DeathObject(object);
-		} break;
+			is_collision = creator != TypeObject::ENEMY; break;
 		default: break;
 	}
-   return true;
+	return is_collision;
 }
 
 void ShotBase::SendMessage(Message *message) 
 {
 	if (message->type_message != TypeMessage::MOVE or message->who_sent == this) 
 		return;
-	CollisionWithObject(message->who_sent);
+	if (not CollisionWithObject(message->who_sent)) return;
+	DeathObject(message->who_sent);
 }

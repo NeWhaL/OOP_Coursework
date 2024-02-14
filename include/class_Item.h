@@ -18,7 +18,7 @@ protected:
 	TypeEffect type_effect;
 	TypeShot type_shot;
 
-	void Move(float dt) {}
+	void Move(float dt) {};
 
 public:
 	Item(sf::Vector2f coordinates, sf::Texture* texture, TypeItem type_item, TypeShot type_shot, TypeEffect type_effect,
