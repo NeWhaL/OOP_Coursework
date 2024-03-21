@@ -2,14 +2,14 @@
 
 Shot::Shot(sf::Vector2f coordinates, sf::Vector2f direction, float speed,
            float range_fire, float damage, TypeEffect effect, TypeObject who_creator):
-			  GameObject(coordinates, speed, 1, ResourceManager::GetInstance()->getTShot(), 1, damage),
-			  direction(direction), 
+			  GameObject(coordinates, speed, 1, damage, 1, 0, 0.5f,
+        res_manager->getTShot(), nullptr, nullptr, nullptr),
 				range_fire(range_fire),
 				effect(effect)
 {
 	creator = who_creator;
   type_object = TypeObject::SHOT;
-  amount_sprite = 1;
+  this->direction = direction;
 }
 
 void Shot::Update(float dt) 
@@ -38,7 +38,7 @@ void Shot::Move(float dt)
   delta_position -= coordinates;
   float length_delta_position = LengthVector(delta_position);
   range_fire -= length_delta_position;
-	Message::MessageMove(this, manager);
+	Message::Move(this);
   if (range_fire > 0) return;
   DeathObject(this);
 }
@@ -48,11 +48,9 @@ void Shot::DeathObject(GameObject* killer)
 	switch(effect)
 	{
 		case TypeEffect::EXPLOSION:
-			Message::MessageCreateEffect({new EffectBomb(coordinates, TypeObject::PLAYER)}, this, this, manager);
+			Message::CreateEffect((new EffectBomb(coordinates, creator)), this, this);
 		  break;
 		default: break;
 	}
 	GameObject::DeathObject(killer);
 }
-
-Shot::~Shot() {}

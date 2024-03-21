@@ -1,21 +1,19 @@
 #ifndef ENM
 #define ENM
 #include "class_GameObject.h"
+#include "class_Hero.h"
 
 class Enemy : public GameObject {
 protected:
-  sf::Vector2f direction;
-	sf::Sprite *body;
-	int amount_sprite_body;
+  const Hero* const hero;
 
-  virtual bool CollisionWithObject(GameObject *object) override;
+  virtual void DirectionOnHero();
 
 public:
-  Enemy(sf::Vector2f coordinates, float speed, float health,
-        float damage, sf::Texture *main_texture);
-  virtual ~Enemy();
-  virtual void Move(float dt) override;
-  void MoveSprite() override;
-  void Draw(sf::RenderWindow* window) const override;
+  Enemy(sf::Vector2f coordinates, float speed, float health, float damage, int amount_sprite_head,
+        int amount_sprite_legs, sf::Texture* head_texture, sf::Texture* legs_up_down_texture, 
+        sf::Texture* legs_left_texture, sf::Texture* legs_right_texture);
+  virtual ~Enemy() = default;
+  virtual void Move(float dt);
 };
 #endif

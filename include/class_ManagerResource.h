@@ -11,7 +11,9 @@ private:
   sf::Texture *hero_legs_left;
   sf::Texture *hero_legs_right;
   sf::Texture *shot;
-  sf::Texture *head_enemy;
+  sf::Texture *melee_head_enemy;
+  sf::Texture *range_head_enemy;
+  sf::Texture *support_head_enemy;
   sf::Texture *explosion;
 
   ResourceManager();
@@ -26,7 +28,9 @@ public:
   sf::Texture *getTHeroLegsRight() const;
   sf::Texture *getTShot() const;
   sf::Texture *getTEffectBomb() const;
-  sf::Texture *getTEnemyHead() const;
+  sf::Texture *getTMeleeEnemyHead() const;
+  sf::Texture *getTRangeEnemyHead() const;
+  sf::Texture *getTSupportEnemyHead() const;
   sf::Texture *getTRoom() const;
 };
 #endif

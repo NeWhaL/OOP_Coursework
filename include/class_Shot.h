@@ -11,18 +11,17 @@ class Shot : public GameObject
 {
 protected:
    float range_fire;
-   sf::Vector2f direction;
    TypeEffect effect;
 
-   void Move(float dt) override;
-   virtual void CollisionWithWall() override;
+   void Move(float dt);
+   virtual void CollisionWithWall();
 
 public:
    Shot(sf::Vector2f coordinates, sf::Vector2f direction, float speed,
         float range_fire, float damage, TypeEffect effect,
         TypeObject who_creator);
-   virtual ~Shot();
-   void Update(float dt) override;
-	void DeathObject(GameObject* killer) override;
+   virtual ~Shot() = default;
+   void Update(float dt);
+	void DeathObject(GameObject* killer);
 };
 #endif

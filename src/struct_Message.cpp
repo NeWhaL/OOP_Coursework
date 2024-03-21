@@ -3,7 +3,9 @@
 #include "../include/class_Shot.h"
 #include "../include/class_Effect.h"
 
-void Message::MessageMove(GameObject* who_sent, Manager* manager)
+Manager* Message::manager = Manager::GetInstance();
+
+void Message::Move(GameObject* who_sent)
 {
 	Message* message = new Message;
 	message->type_message = TypeMessage::MOVE;
@@ -11,7 +13,7 @@ void Message::MessageMove(GameObject* who_sent, Manager* manager)
 	manager->SendMessage(message);
 }
 
-void Message::MessageCreateShot(Shot* shot, GameObject* creator, Manager* manager)
+void Message::CreateShot(Shot* shot, GameObject* creator)
 {
   Message *message = new Message;
   message->type_message = TypeMessage::CREATE;
@@ -20,7 +22,7 @@ void Message::MessageCreateShot(Shot* shot, GameObject* creator, Manager* manage
   manager->SendMessage(message);
 }
 
-void Message::MessageCreateEffect(Effect* effect, GameObject* who_sent, GameObject* creator, Manager* manager)
+void Message::CreateEffect(Effect* effect, GameObject* who_sent, GameObject* creator)
 {
   Message* message = new Message;
 	message->who_sent = who_sent;
@@ -30,7 +32,7 @@ void Message::MessageCreateEffect(Effect* effect, GameObject* who_sent, GameObje
 	manager->SendMessage(message);
 }
 
-void Message::ActionEffect(GameObject* who_sent, TypeObject creator, TypeEffect type_effect, float damage, Manager* manager)
+void Message::ActionEffect(GameObject* who_sent, TypeObject creator, TypeEffect type_effect, float damage)
 {
   Message* message = new Message;
 	message->type_message = TypeMessage::EFFECT;
@@ -41,7 +43,7 @@ void Message::ActionEffect(GameObject* who_sent, TypeObject creator, TypeEffect 
 	manager->SendMessage(message);
 }
 
-void Message::Death(GameObject* who_die, GameObject* killer, int amount_money, Manager* manager)
+void Message::Death(GameObject* who_die, GameObject* killer, int amount_money)
 {
 	Message* message = new Message;
 	message->type_message = TypeMessage::DEATH;
@@ -53,7 +55,7 @@ void Message::Death(GameObject* who_die, GameObject* killer, int amount_money, M
 }
 
 void Message::BuyItem(GameObject* who_sent, TypeShot type_shot, TypeEffect type_effect, 
-							float health, float damage, float speed, float range_fire, Manager* manager)
+							float health, float damage, float speed, float range_fire)
 {
 	Message* message_item = new Message;
 	message_item->who_sent = who_sent;
@@ -65,4 +67,13 @@ void Message::BuyItem(GameObject* who_sent, TypeShot type_shot, TypeEffect type_
 	message_item->item.speed = speed;
 	message_item->item.range_fire = range_fire;
 	manager->SendMessage(message_item);
+}
+
+void Message::EndGame(TypeEndGame reason)
+{
+	Message* message = new Message();
+	message->type_message = TypeMessage::END_GAME;
+	message->who_sent = nullptr;
+	message->end_game.reason = reason;
+	manager->SendMessage(message);
 }

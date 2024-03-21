@@ -4,7 +4,7 @@ ShotBase::ShotBase(sf::Vector2f coordinates, sf::Vector2f direction, float speed
 						 float damage, TypeEffect effect, TypeObject who_creator):
 						 Shot(coordinates, direction, speed, range_fire, damage, effect, who_creator) {}
 
-bool ShotBase::CollisionWithObject(GameObject *object) 
+bool ShotBase::CollisionWithObject(const GameObject * const object) 
 {
 	if (not GameObject::CollisionWithObject(object))
 		return false; 
@@ -12,9 +12,9 @@ bool ShotBase::CollisionWithObject(GameObject *object)
 	switch(object->GetTypeObject())
 	{
 		case TypeObject::PLAYER:
-			is_collision = creator != TypeObject::PLAYER; break;
+			is_collision = (creator != TypeObject::PLAYER); break;
 		case TypeObject::ENEMY:
-			is_collision = creator != TypeObject::ENEMY; break;
+			is_collision = (creator != TypeObject::ENEMY); break;
 		default: break;
 	}
 	return is_collision;

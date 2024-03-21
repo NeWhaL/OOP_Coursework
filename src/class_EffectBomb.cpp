@@ -1,13 +1,11 @@
 #include "../include/class_EffectBomb.h"
-#include "../include/class_Manager.h"
 
 EffectBomb::EffectBomb(sf::Vector2f coordinates, TypeObject creator):
-							  Effect(coordinates, ResourceManager::GetInstance()->getTEffectBomb(), 
+							  Effect(coordinates, res_manager->getTEffectBomb(), 
 							  1, 0.5, TypeEffect::EXPLOSION, 50)
 {
 	this->creator = creator;
-	main_sprite->setScale(0.15, 0.15);
-	radius_hitbox_head = main_sprite->getGlobalBounds().height / 2;
+	type_object = TypeObject::EFFECT;
 }
 
 void EffectBomb::Update(float dt) 
@@ -24,7 +22,7 @@ void EffectBomb::Action(float dt)
 		total_time += dt;
 		return;
 	}
-	Message::ActionEffect(this, creator, TypeEffect::EXPLOSION, damage, manager);
+	Message::ActionEffect(this, creator, TypeEffect::EXPLOSION, damage);
 	total_time += dt;
 }
 

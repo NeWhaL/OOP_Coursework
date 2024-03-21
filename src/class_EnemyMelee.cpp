@@ -1,16 +1,17 @@
 #include "../include/class_EnemyMelee.h"
-#include "../include/class_Manager.h"
 
 EnemyMelee::EnemyMelee(sf::Vector2f coordinates, float speed, float health, float damage):
-						Enemy{coordinates, speed, health, damage, ResourceManager::GetInstance()->getTHeroHead()}
+						Enemy{coordinates, speed, health, damage, 4, 10,
+						res_manager->getTMeleeEnemyHead(),
+						res_manager->getTHeroLegsUpDown(),
+						res_manager->getTHeroLegsLeft(),
+						res_manager->getTHeroLegsRight()}
 {
   type_object = TypeObject::ENEMY;
-  amount_sprite = 8;
   amount_money = 1;
 }
 
 void EnemyMelee::Move(float dt) { Enemy::Move(dt); }
-
 
 void EnemyMelee::Update(float dt) {
   Move(dt);
@@ -18,10 +19,11 @@ void EnemyMelee::Update(float dt) {
   GameObject::CollisionWithWall();
 }
 
-bool EnemyMelee::CollisionWithObject(GameObject *object) 
+bool EnemyMelee::CollisionWithObject(const GameObject * const object) 
 {
-	Enemy::CollisionWithObject(manager->GetHero());
-	return GameObject::CollisionWithObject(object) and object->GetTypeObject() == TypeObject::SHOT;
+	Enemy::DirectionOnHero();
+	return GameObject::CollisionWithObject(object) and 
+		object->GetTypeObject() == TypeObject::SHOT;
 }
 
 void EnemyMelee::SendMessage(Message *message) 

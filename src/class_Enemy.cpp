@@ -1,31 +1,30 @@
 #include "../include/class_Enemy.h"
 #include "../include/class_Manager.h"
+#include <SFML/Graphics/Texture.hpp>
 
-Enemy::Enemy(sf::Vector2f coordinates, float speed, float health, float damage, sf::Texture *main_texture):
-			 GameObject{coordinates, speed, health, main_texture, 8, damage},
-		 	 direction{sf::Vector2f{0.f, 0.f}},
-			 amount_sprite_body{10} {}
-
-Enemy::~Enemy() {}
+Enemy::Enemy(sf::Vector2f coordinates, float speed, float health, float damage, int amount_sprite_head, int amount_sprite_legs, 
+						 sf::Texture* head_texture, sf::Texture* legs_up_down_texture, sf::Texture* legs_left_texture, 
+						 sf::Texture* legs_right_texture):
+			 GameObject{coordinates, speed, health, damage, amount_sprite_head, amount_sprite_legs, 0.5f,
+			 						head_texture, legs_up_down_texture, legs_left_texture, legs_right_texture},	
+			 hero{manager->GetHero()} {}
 
 void Enemy::Move(float dt) 
 {
-	Message::MessageMove(this, manager);
+	Message::Move(this);
   coordinates.x += direction.x * speed * dt;
   coordinates.y += direction.y * speed * dt;
 }
 
-void Enemy::MoveSprite() { main_sprite->setPosition(coordinates.x, coordinates.y); }
-
-bool Enemy::CollisionWithObject(GameObject *object) 
+void Enemy::DirectionOnHero()
 {
-	// Направление у противника считается каждый раз и он всегда идет на игрока
-	direction = manager->GetHero()->GetPositionHead() - coordinates;
+	direction = hero->GetPositionHead() - coordinates;
 	direction = NormalizationVector(direction);
-	if (not GameObject::CollisionWithObject(object)) return false;
-	direction.x *= -1;
-	direction.y *= -1;
-	return true;
+	if (not GameObject::CollisionWithObject(hero)) 
+		return;
+	if (direction.x > 0 and direction.y > 0)
+	{
+		direction.x *= -1;
+		direction.y *= -1;
+	}
 }
-
-void Enemy::Draw(sf::RenderWindow* window) const { GameObject::Draw(window); }

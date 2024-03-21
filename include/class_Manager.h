@@ -2,6 +2,7 @@
 #define MNG
 
 #include "class_EnemyMelee.h"
+#include "class_EnemyRange.h"
 #include "class_GameObject.h"
 #include "class_Hero.h"
 #include "class_Item.h"

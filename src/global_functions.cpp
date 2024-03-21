@@ -11,11 +11,10 @@ Vector2f NormalizationVector(Vector2f vector) {
   float length = LengthVector((Vector2f)vector);
   return Vector2f(vector.x / length, vector.y / length);
 }
-sf::Vector2i
-MouseCoordinatesRelativeOtherCoordinates(Vector2i coordinates_mouse,
-                                         Vector2f coordinates_object) {
-  return Vector2i(coordinates_mouse.x - coordinates_object.x,
-                  coordinates_mouse.y - coordinates_object.y);
+
+sf::Vector2f CurrentCoordinatesOfTheObjectRelativeToAnotherObject(sf::Vector2f current_coordinates, sf::Vector2f coordinates_object)
+{
+	return Vector2f(current_coordinates.x - coordinates_object.x,current_coordinates.y - coordinates_object.y);
 }
 
 float LengthBetweenTwoPoints(Vector2f first_point, Vector2f second_point) {

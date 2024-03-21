@@ -1,56 +1,38 @@
 #include "../include/class_Hero.h"
 #include "../include/class_Manager.h"
 
-
 Hero::Hero(sf::Vector2f coordinates, float speed, float health,
            float shot_cooldown_total, float melee_cooldown_total, float damage):
-			  GameObject(coordinates, speed, health, ResourceManager::GetInstance()->getTHeroHead(), 8,	damage),
-			  shot_cooldown_total(shot_cooldown_total), 
-				shot_cooldown(0),
-			  current_effect_shot(TypeEffect::NONE),
-			  range_fire_shot(400), 
-				speed_shot(350)
+			  GameObject{coordinates, speed, health, damage, 8, 10, 0.5f,
+									 res_manager->getTHeroHead(),
+									 res_manager->getTHeroLegsUpDown(),
+									 res_manager->getTHeroLegsLeft(),
+									 res_manager->getTHeroLegsRight()},
+			  shot_cooldown_total{shot_cooldown_total}, 
+				shot_cooldown{0},
+			  current_effect_shot{TypeEffect::NONE},
+			  range_fire_shot{400}, 
+				speed_shot{350}
 {
+
+	float speed_shot = 500;
+	float range_fire_shot = 1000;
 	type_object = TypeObject::PLAYER;
 	creator = TypeObject::NONE;
 	// время, которое игрок не получает урон полсле нанесения ему урона (в секундах)
 	cooldown_take_time = 1;
 	// накопленное время после нанесения урона герою
 	time_after_damage_is_done = 0;
-
-	ResourceManager *RM = ResourceManager::GetInstance();
-	legs_up_down = new sf::Sprite;
-	legs_left = new sf::Sprite;
-	legs_right = new sf::Sprite;
-	legs_up_down->setTexture(*RM->getTHeroLegsUpDown());
-	legs_up_down->setScale(0.5 , 0.5);
-	legs_left->setTexture(*RM->getTHeroLegsLeft());
-	legs_left->setScale(0.5 , 0.5);
-	legs_right->setTexture(*RM->getTHeroLegsRight());
-	legs_right->setScale(0.5 , 0.5);
-
-	sf::FloatRect bounds_legs_up_down = legs_up_down->getLocalBounds();
-	legs_up_down->setTextureRect(
-	    sf::IntRect(0, 0, bounds_legs_up_down.width / amount_sprite_legs_up_down,
-	                bounds_legs_up_down.height));
-	legs_up_down->setOrigin(bounds_legs_up_down.width / amount_sprite_legs_up_down / 2,
-                           bounds_legs_up_down.height / 2);
-	radius_hitbox_legs = legs_up_down->getGlobalBounds().height / 2;
-}
-
-Hero::~Hero() 
-{
-	delete legs_up_down;
-  delete legs_right;
-  delete legs_left;
 }
 
 void Hero::Update(float dt) 
 {
+	time_after_damage_is_done += dt;
 	Move(dt);
-   MoveSprite();
-   GameObject::CollisionWithWall();
-   CreateShot(dt);
+  MoveSprite();
+  GameObject::CollisionWithWall();
+	shot_cooldown += dt;	
+  CreateShot(dt);
 }
 
 void Hero::Move(float dt) 
@@ -88,76 +70,58 @@ void Hero::Move(float dt)
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		 coordinates.x += speed * dt;
 
-	Message::MessageMove(this, manager);
-}
-
-void Hero::MoveSprite() 
-{
-   legs_up_down->setPosition(coordinates.x, coordinates.y);
-   main_sprite->setPosition(coordinates.x, coordinates.y - legs_up_down->getLocalBounds().height +
-									 legs_up_down->getGlobalBounds().height);
+	Message::Move(this);
 }
 
 void Hero::CreateShot(float dt) 
 {
-   shot_cooldown += dt;
-   if (shot_cooldown < shot_cooldown_total or
-      (not(sf::Mouse::isButtonPressed(sf::Mouse::Left) or
-           sf::Mouse::isButtonPressed(sf::Mouse::Right))))
-		 return;
+  shot_cooldown += dt;
+  if (shot_cooldown < shot_cooldown_total or
+     (not(sf::Mouse::isButtonPressed(sf::Mouse::Left) or
+          sf::Mouse::isButtonPressed(sf::Mouse::Right))))
+		return;
 
 	shot_cooldown = 0;
-  sf::Vector2i current_mouse_position =
-      sf::Mouse::getPosition(*manager->GetWindow());
-  current_mouse_position = MouseCoordinatesRelativeOtherCoordinates(
-      current_mouse_position, main_sprite->getPosition());
+  sf::Vector2i cur_mouse_pos = sf::Mouse::getPosition(*manager->GetWindow());
+	cur_mouse_pos = static_cast<sf::Vector2i>(CurrentCoordinatesOfTheObjectRelativeToAnotherObject(
+									static_cast<sf::Vector2f>(cur_mouse_pos), GetPositionHead()));
   sf::Vector2f normalized_mouse_position =
-      NormalizationVector(static_cast<sf::Vector2f>(current_mouse_position));
+ 	    NormalizationVector(static_cast<sf::Vector2f>(cur_mouse_pos));
 
-	Shot* shot = new ShotBase(main_sprite->getPosition(), normalized_mouse_position, speed_shot,
+	Shot* shot = new ShotBase(head_sprite->getPosition(), normalized_mouse_position, speed_shot,
 														range_fire_shot, damage, current_effect_shot, TypeObject::PLAYER);
-	Message::MessageCreateShot(shot, this, manager);
+	Message::CreateShot(shot, this);
 }
 
-void Hero::Draw(sf::RenderWindow *window) const 
+bool Hero::CollisionWithObject(const GameObject * const object) 
 {
-   window->draw(*legs_up_down);
-   GameObject::Draw(window);
-}
-
-bool Hero::CollisionWithObject(GameObject *object) 
-{
-		return object->GetCreatorObject() == TypeObject::PLAYER and 
-					 cooldown_take_time > time_after_damage_is_done and
-					 not GameObject::CollisionWithObject(object) and 
-					 object->GetCreatorObject() != TypeObject::SHOT and 
-					 object->GetCreatorObject() != TypeObject::ENEMY;
+	return GameObject::CollisionWithObject(object) and object->GetCreatorObject() != TypeObject::PLAYER;
 }
 
 void Hero::SendMessage(Message *message) 
 {		
 	if (message->who_sent == this)
 		return;
+	auto& damage_object = message->who_sent;
 	switch (message->type_message) 
   {
 	  case TypeMessage::MOVE:
 		{
-		  if (not CollisionWithObject(message->who_sent))	return;
-			auto& damage_object = message->who_sent;
+		  if (not CollisionWithObject(damage_object)) return;
+			if (time_after_damage_is_done < cooldown_take_time) return;
+			time_after_damage_is_done = 0;
 			health -= damage_object->GetDamage();
 			if (health <= 0) DeathObject(damage_object);
 		} break;
 	  case TypeMessage::EFFECT:
 	  {
+			if(not CollisionWithObject(damage_object)) return;
 		  switch(message->effect.type)
 			{ 
 			  case TypeEffect::EXPLOSION:
 			  {
-				  if (not (message->effect.creator != TypeObject::PLAYER and 
-					 	  GameObject::CollisionWithObject(message->who_sent)))
-					  return;
 				  health -= message->effect.damage;
-				  if (health <= 0) DeathObject(message->who_sent);
+				  if (health <= 0) DeathObject(damage_object);
 			  } break;
 			  default: break;
 			}
@@ -177,5 +141,6 @@ void Hero::SendMessage(Message *message)
 
 void Hero::DeathObject(GameObject* killer)
 {
+	Message::EndGame(TypeEndGame::DEATH_HERO);
 	// добавить выход из игры если герой погиб
 }
