@@ -8,10 +8,11 @@ EnemyRange::EnemyRange(sf::Vector2f coordinates, float speed, float health, floa
 									res_manager->getTHeroLegsRight()},
             shot_cooldown_total{1.5},
             shot_cooldown{0},
-						distance{500},
-						range_fire{400},
-						current_type_shot{TypeShot::BASE},
-						current_type_effect{TypeEffect::EXPLOSION}
+						distance{200},
+						range_fire_shot{400},
+						speed_shot{400},
+						current_type_shot{TypeShot::RICOCHET},
+						current_type_effect{TypeEffect::NONE}
 {
   type_object = TypeObject::ENEMY;
   amount_money = 2;
@@ -20,6 +21,7 @@ EnemyRange::EnemyRange(sf::Vector2f coordinates, float speed, float health, floa
 void EnemyRange::Move(float dt) 
 {
 	if(CollisionDistance()) Enemy::Move(dt);
+	Message::Move(this);
 }
 
 bool EnemyRange::CollisionWithObject(const GameObject * const object)
@@ -92,7 +94,27 @@ void EnemyRange::CreateShot(float dt)
 	cur_pos_head = CurrentCoordinatesOfTheObjectRelativeToAnotherObject(
 								 hero->GetPositionHead(), cur_pos_head);
 	sf::Vector2f normalized_vector = NormalizationVector(cur_pos_head);
-	Shot* shot = new ShotBase(head_sprite->getPosition(), normalized_vector, 550, 400,
-										damage, current_type_effect, TypeObject::ENEMY);
-	Message::CreateShot(shot, this);
+
+	ShotSelectionToCreate(normalized_vector);
+}
+
+void EnemyRange::ShotSelectionToCreate(sf::Vector2f mouse_pos) 
+{
+	Shot* shot = nullptr;
+	switch(current_type_shot)
+	{
+		case TypeShot::BASE:
+		{
+			shot = new ShotBase(head_sprite->getPosition(), mouse_pos, speed_shot,
+														range_fire_shot, damage, current_type_effect, TypeObject::ENEMY);
+		} break;
+		case TypeShot::RICOCHET:
+		{
+			shot = new ShotRicochet(head_sprite->getPosition(), mouse_pos, speed_shot,
+														range_fire_shot, damage, current_type_effect, TypeObject::ENEMY);
+		} break;
+		default: break;
+	}
+	if(shot)
+		Message::CreateShot(shot, this);
 }

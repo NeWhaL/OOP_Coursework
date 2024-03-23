@@ -11,7 +11,8 @@ class Manager;
 
 enum class TypeObject { NONE, PLAYER, ENEMY, SHOT, ITEM, EFFECT };
 
-class GameObject {
+class GameObject 
+{
   friend FontForCharacteristics;
 protected:
   static Manager* manager;
@@ -54,6 +55,7 @@ public:
              sf::Texture* legs_right_texture);
   virtual ~GameObject();
   int& GetMoney();
+  sf::Vector2f GetDirection() const;
   TypeObject GetTypeObject() const;
   TypeObject GetCreatorObject() const;
   sf::Vector2f GetPosition() const;

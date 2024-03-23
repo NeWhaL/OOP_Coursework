@@ -11,7 +11,11 @@ EnemyMelee::EnemyMelee(sf::Vector2f coordinates, float speed, float health, floa
   amount_money = 1;
 }
 
-void EnemyMelee::Move(float dt) { Enemy::Move(dt); }
+void EnemyMelee::Move(float dt) 
+{ 
+	Enemy::Move(dt); 
+	Message::Move(this);
+}
 
 void EnemyMelee::Update(float dt) {
   Move(dt);

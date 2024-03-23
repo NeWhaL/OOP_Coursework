@@ -71,6 +71,11 @@ int& GameObject::GetMoney() { return amount_money; }
 
 float GameObject::GetDamage() const { return damage; }
 
+sf::Vector2f GameObject::GetDirection() const
+{ 
+	return direction; 
+}
+
 void GameObject::CollisionWithWall() 
 {
 	Size_arena tmp_size = manager->GetSizeArena();

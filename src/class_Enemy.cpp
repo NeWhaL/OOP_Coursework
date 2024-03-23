@@ -1,6 +1,5 @@
 #include "../include/class_Enemy.h"
 #include "../include/class_Manager.h"
-#include <SFML/Graphics/Texture.hpp>
 
 Enemy::Enemy(sf::Vector2f coordinates, float speed, float health, float damage, int amount_sprite_head, int amount_sprite_legs, 
 						 sf::Texture* head_texture, sf::Texture* legs_up_down_texture, sf::Texture* legs_left_texture, 
@@ -11,7 +10,6 @@ Enemy::Enemy(sf::Vector2f coordinates, float speed, float health, float damage, 
 
 void Enemy::Move(float dt) 
 {
-	Message::Move(this);
   coordinates.x += direction.x * speed * dt;
   coordinates.y += direction.y * speed * dt;
 }

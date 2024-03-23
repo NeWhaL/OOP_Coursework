@@ -10,15 +10,16 @@ Hero::Hero(sf::Vector2f coordinates, float speed, float health,
 									 res_manager->getTHeroLegsRight()},
 			  shot_cooldown_total{shot_cooldown_total}, 
 				shot_cooldown{0},
+				current_type_shot{TypeShot::BASE},
 			  current_effect_shot{TypeEffect::NONE},
-			  range_fire_shot{400}, 
+			  range_fire_shot{800}, 
 				speed_shot{350}
 {
-
 	float speed_shot = 500;
 	float range_fire_shot = 1000;
 	type_object = TypeObject::PLAYER;
 	creator = TypeObject::NONE;
+	amount_money = 10;
 	// время, которое игрок не получает урон полсле нанесения ему урона (в секундах)
 	cooldown_take_time = 1;
 	// накопленное время после нанесения урона герою
@@ -88,9 +89,32 @@ void Hero::CreateShot(float dt)
   sf::Vector2f normalized_mouse_position =
  	    NormalizationVector(static_cast<sf::Vector2f>(cur_mouse_pos));
 
-	Shot* shot = new ShotBase(head_sprite->getPosition(), normalized_mouse_position, speed_shot,
+	ShotSelectionToCreate(normalized_mouse_position);
+}
+
+void Hero::ShotSelectionToCreate(sf::Vector2f mouse_pos) 
+{
+	Shot* shot = nullptr;
+	std::cout << "зашел создать выстрел\n";
+	switch(current_type_shot)
+	{
+		case TypeShot::NONE:
+		case TypeShot::BASE:
+		{
+			std::cout << "зашел создать базовый выстрел...\n";
+			shot = new ShotBase(head_sprite->getPosition(), mouse_pos, speed_shot,
 														range_fire_shot, damage, current_effect_shot, TypeObject::PLAYER);
-	Message::CreateShot(shot, this);
+		} break;
+		case TypeShot::RICOCHET:
+		{
+			std::cout << "зашел создать рикошет выстрел...\n";
+			shot = new ShotRicochet(head_sprite->getPosition(), mouse_pos, speed_shot,
+														range_fire_shot, damage, current_effect_shot, TypeObject::PLAYER);
+		} break;
+		default: break;
+	}
+	if(shot)
+		Message::CreateShot(shot, this);
 }
 
 bool Hero::CollisionWithObject(const GameObject * const object) 

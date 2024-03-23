@@ -50,7 +50,7 @@ Size_arena Manager::GetSizeArena() const { return size_arena; }
 
 void Manager::Run() 
 {
-   hero = new Hero({600, 400}, 300, 10, 0.1, 1, 2);
+   hero = new Hero({600, 400}, 300, 10, 0.5, 1, 2);
    game_objects.push_back(new Item({1200, 300}, ResourceManager::GetInstance()->getTEffectBomb(), TypeItem::EFFECT,
  								  TypeShot::NONE, TypeEffect::EXPLOSION, 0, 0, 0, 0, 0));
    sf::Clock time;

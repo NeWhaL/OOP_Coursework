@@ -18,9 +18,8 @@ sf::Vector2f CurrentCoordinatesOfTheObjectRelativeToAnotherObject(sf::Vector2f c
 }
 
 float LengthBetweenTwoPoints(Vector2f first_point, Vector2f second_point) {
-  return sqrt(
-      (first_point.x - second_point.x) * (first_point.x - second_point.x) +
-      (first_point.y - second_point.y) * (first_point.y - second_point.y));
+  return std::sqrt((first_point.x - second_point.x) * (first_point.x - second_point.x) +
+      						(first_point.y - second_point.y) * (first_point.y - second_point.y));
 }
 
 std::ostream& operator << (std::ostream &os, const TypeObject &type)
