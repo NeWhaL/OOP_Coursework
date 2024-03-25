@@ -33,7 +33,6 @@
 
 #cmake files
 ./build/*
-*.txt
 
 ./game
 

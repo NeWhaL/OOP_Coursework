@@ -19,6 +19,8 @@ bool ShotRicochet::CollisionWithObject(const GameObject* const object)
 			is_collision = (creator != TypeObject::PLAYER); break;
 		case TypeObject::ENEMY:
 			is_collision = (creator != TypeObject::ENEMY); break;
+		case TypeObject::SHOT: 
+			is_collision = true; break;
 		default: break;
 	}
 	if(is_collision)

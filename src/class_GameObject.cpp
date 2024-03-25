@@ -27,7 +27,6 @@ GameObject::GameObject(sf::Vector2f coordinates, float speed, float health, floa
 	scale_sprite{scale_sprite},
 	font_characteristics{new FontForCharacteristics("fonts/CodenameCoderFree4F-Bold.ttf", 50)}
 {
-
 	SetSpriteFromTexture(head_texture, head_sprite, amount_sprite_head);
 	SetSpriteFromTexture(legs_up_down_texture, legs_up_down, amount_sprite_legs);
 	SetSpriteFromTexture(legs_left_texture, legs_left, amount_sprite_legs);

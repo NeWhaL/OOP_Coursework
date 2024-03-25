@@ -10,7 +10,7 @@ Hero::Hero(sf::Vector2f coordinates, float speed, float health,
 									 res_manager->getTHeroLegsRight()},
 			  shot_cooldown_total{shot_cooldown_total}, 
 				shot_cooldown{0},
-				current_type_shot{TypeShot::BASE},
+				current_type_shot{TypeShot::RICOCHET},
 			  current_effect_shot{TypeEffect::NONE},
 			  range_fire_shot{800}, 
 				speed_shot{350}
@@ -95,19 +95,16 @@ void Hero::CreateShot(float dt)
 void Hero::ShotSelectionToCreate(sf::Vector2f mouse_pos) 
 {
 	Shot* shot = nullptr;
-	std::cout << "зашел создать выстрел\n";
 	switch(current_type_shot)
 	{
 		case TypeShot::NONE:
 		case TypeShot::BASE:
 		{
-			std::cout << "зашел создать базовый выстрел...\n";
 			shot = new ShotBase(head_sprite->getPosition(), mouse_pos, speed_shot,
 														range_fire_shot, damage, current_effect_shot, TypeObject::PLAYER);
 		} break;
 		case TypeShot::RICOCHET:
 		{
-			std::cout << "зашел создать рикошет выстрел...\n";
 			shot = new ShotRicochet(head_sprite->getPosition(), mouse_pos, speed_shot,
 														range_fire_shot, damage, current_effect_shot, TypeObject::PLAYER);
 		} break;
