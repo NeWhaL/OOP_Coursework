@@ -6,6 +6,7 @@
 #include "class_GameObject.h"
 #include "class_Hero.h"
 #include "class_Item.h"
+#include "class_EventManager.h"
 
 struct Size_arena 
 {
@@ -19,8 +20,9 @@ private:
 	static Manager *manager;
    sf::RenderWindow *window;
    std::list<GameObject *> game_objects;
-   Hero *hero;
    std::list<Message *> messages;
+   EventManager* event_manager;
+   Hero *hero;
    sf::Sprite *sprite_room; 
    Size_arena size_arena;
 	float cooldown_wave; 
@@ -45,4 +47,5 @@ public:
    void Run();
    void End();
 };
+
 #endif

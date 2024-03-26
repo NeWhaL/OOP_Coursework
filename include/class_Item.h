@@ -2,10 +2,6 @@
 #define ITM
 
 #include "class_GameObject.h"
-#include "class_Shot.h"
-#include "class_Effect.h"
-
-enum class TypeItem { SHOT, EFFECT, STAT };
 
 class Item : public GameObject 
 {

@@ -51,4 +51,4 @@ Texture *ResourceManager::getTRoom() const { return sprite_room; }
 Texture *ResourceManager::getTMeleeEnemyHead() const { return melee_head_enemy; }
 Texture *ResourceManager::getTRangeEnemyHead() const { return range_head_enemy; }
 Texture *ResourceManager::getTSupportEnemyHead() const { return support_head_enemy; }
-Texture *ResourceManager::getTEffectBomb() const { return explosion; }
+Texture *ResourceManager::getTEffectExplosion() const { return explosion; }

@@ -27,7 +27,7 @@ public:
   sf::Texture *getTHeroLegsLeft() const;
   sf::Texture *getTHeroLegsRight() const;
   sf::Texture *getTShot() const;
-  sf::Texture *getTEffectBomb() const;
+  sf::Texture *getTEffectExplosion() const;
   sf::Texture *getTMeleeEnemyHead() const;
   sf::Texture *getTRangeEnemyHead() const;
   sf::Texture *getTSupportEnemyHead() const;

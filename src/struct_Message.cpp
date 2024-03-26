@@ -22,27 +22,6 @@ void Message::CreateShot(Shot* shot, GameObject* creator)
   manager->SendMessage(message);
 }
 
-void Message::CreateEffect(Effect* effect, GameObject* who_sent, GameObject* creator)
-{
-  Message* message = new Message;
-	message->who_sent = who_sent;
-	message->type_message = TypeMessage::CREATE;
-	message->create.creator = creator;
-	message->create.new_object = effect;
-	manager->SendMessage(message);
-}
-
-void Message::ActionEffect(GameObject* who_sent, TypeObject creator, TypeEffect type_effect, float damage)
-{
-  Message* message = new Message;
-	message->type_message = TypeMessage::EFFECT;
-	message->who_sent = who_sent;
-	message->effect.creator = creator;
-	message->effect.type = type_effect;
-	message->effect.damage = damage;
-	manager->SendMessage(message);
-}
-
 void Message::Death(GameObject* who_die, GameObject* killer, int amount_money)
 {
 	Message* message = new Message;
@@ -67,6 +46,34 @@ void Message::BuyItem(GameObject* who_sent, TypeShot type_shot, TypeEffect type_
 	message_item->item.speed = speed;
 	message_item->item.range_fire = range_fire;
 	manager->SendMessage(message_item);
+}
+
+void Message::StartEffect(TypeEffect type_effect, TypeObject creator, GameObject* who_sent)
+{
+	Message* message = new Message;
+	message->type_message = TypeMessage::CREATE_EFFECT;
+	message->who_sent = who_sent;
+	message->create_effect.type_effect = type_effect;
+	message->create_effect.creator = creator;
+	manager->SendMessage(message);
+}
+
+void Message::EndEffect(Effect* effect)
+{
+	Message* message = new Message;
+	message->who_sent = nullptr;
+	message->type_message = TypeMessage::END_EFFECT;
+	message->end_effect.effect = effect;
+	manager->SendMessage(message);
+}
+
+void Message::ActionEffect(Effect* effect)
+{
+	Message* message = new Message;
+	message->who_sent = nullptr;
+	message->type_message = TypeMessage::EFFECT;
+	message->effect.effect = effect;
+	manager->SendMessage(message);
 }
 
 void Message::EndGame(TypeEndGame reason)

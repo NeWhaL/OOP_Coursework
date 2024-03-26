@@ -26,3 +26,19 @@ void Enemy::DirectionOnHero()
 		direction.y *= -1;
 	}
 }
+
+bool Enemy::CollisionWithEffect(Effect* effect) const
+{
+	if (effect->GetCreator() == TypeObject::ENEMY) return false;
+	switch (effect->GetTypeEffect())
+	{
+		case TypeEffect::EXPLOSION:
+		{
+			EffectExplosion* effect_explosion = static_cast<EffectExplosion*>(effect);
+			return radius_hitbox_head + effect_explosion->GetKillRadius() >=
+			  LengthBetweenTwoPoints(GetPositionHead(), effect_explosion->GetCoordinates());
+		} break;
+		default: break;
+	}
+	return false;
+}

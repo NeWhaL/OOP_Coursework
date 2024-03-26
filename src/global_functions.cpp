@@ -1,5 +1,4 @@
 #include "../include/global_functions.h"
-#include "../include/class_GameObject.h"
 
 using namespace sf;
 

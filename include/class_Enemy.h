@@ -8,6 +8,7 @@ protected:
   const Hero* const hero;
 
   virtual void DirectionOnHero();
+  bool CollisionWithEffect(Effect* effect) const;
 
 public:
   Enemy(sf::Vector2f coordinates, float speed, float health, float damage, int amount_sprite_head,

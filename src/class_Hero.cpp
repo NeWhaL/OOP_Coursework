@@ -123,11 +123,11 @@ void Hero::SendMessage(Message *message)
 {		
 	if (message->who_sent == this)
 		return;
-	auto& damage_object = message->who_sent;
 	switch (message->type_message) 
   {
 	  case TypeMessage::MOVE:
 		{
+			auto& damage_object = message->who_sent;
 		  if (not CollisionWithObject(damage_object)) return;
 			if (time_after_damage_is_done < cooldown_take_time) return;
 			time_after_damage_is_done = 0;
@@ -136,15 +136,16 @@ void Hero::SendMessage(Message *message)
 		} break;
 	  case TypeMessage::EFFECT:
 	  {
-			if(not CollisionWithObject(damage_object)) return;
-		  switch(message->effect.type)
-			{ 
-			  case TypeEffect::EXPLOSION:
-			  {
-				  health -= message->effect.damage;
-				  if (health <= 0) DeathObject(damage_object);
-			  } break;
-			  default: break;
+			switch(message->effect.effect->GetTypeEffect())
+			{
+				case TypeEffect::EXPLOSION:
+				{
+					EffectExplosion* effect = static_cast<EffectExplosion*>(message->effect.effect);
+					if (not CollisionWithEffect(effect)) return;
+					health -= effect->GetDamage();
+					if (health <= 0) DeathObject(message->who_sent);
+				} break;
+				default: break;
 			}
 	  } break;
 		case TypeMessage::ITEM:
@@ -158,6 +159,22 @@ void Hero::SendMessage(Message *message)
 		} break;
 	  default: break;
   }
+}
+
+bool Hero::CollisionWithEffect(Effect* effect) const
+{
+	if (effect->GetCreator() == TypeObject::PLAYER) return false;
+	switch (effect->GetTypeEffect())
+	{
+		case TypeEffect::EXPLOSION:
+		{
+			EffectExplosion* effect_explosion = static_cast<EffectExplosion*>(effect);
+			return radius_hitbox_head + effect_explosion->GetKillRadius() >=
+			  LengthBetweenTwoPoints(GetPositionHead(), effect_explosion->GetCoordinates());
+		} break;
+		default: break;
+	}
+	return false;
 }
 
 void Hero::DeathObject(GameObject* killer)

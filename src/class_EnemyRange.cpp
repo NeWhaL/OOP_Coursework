@@ -11,8 +11,8 @@ EnemyRange::EnemyRange(sf::Vector2f coordinates, float speed, float health, floa
 						distance{200},
 						range_fire_shot{400},
 						speed_shot{400},
-						current_type_shot{TypeShot::RICOCHET},
-						current_type_effect{TypeEffect::NONE}
+						current_type_shot{TypeShot::BASE},
+						current_type_effect{TypeEffect::EXPLOSION}
 {
   type_object = TypeObject::ENEMY;
   amount_money = 2;
@@ -35,11 +35,12 @@ bool EnemyRange::CollisionWithObject(const GameObject * const object)
 void EnemyRange::SendMessage(Message *message)
 {
   if (message->who_sent == this) return;
-	auto& damage_object = message->who_sent;
+
   switch (message->type_message) 
   {
 	  case TypeMessage::MOVE:
 		{
+			auto& damage_object = message->who_sent;
 			if(damage_object->GetCreatorObject() == TypeObject::ENEMY) return;
 			if(not CollisionWithObject(damage_object)) return;
 			health -= damage_object->GetDamage();
@@ -47,14 +48,14 @@ void EnemyRange::SendMessage(Message *message)
 		} break;
 	  case TypeMessage::EFFECT:
 	  {
-			if(not CollisionWithObject(damage_object)) return;
-			if(message->effect.creator == TypeObject::ENEMY) return;
-	 	  switch(message->effect.type)
+			switch(message->effect.effect->GetTypeEffect())
 			{
 				case TypeEffect::EXPLOSION:
 				{
-					health -= message->effect.damage;
-					if (health <= 0) DeathObject(damage_object);
+					EffectExplosion* effect = static_cast<EffectExplosion*>(message->effect.effect);
+					if (not Enemy::CollisionWithEffect(effect)) return;
+					health -= effect->GetDamage();
+					if (health <= 0) DeathObject(message->who_sent);
 				} break;
 				default: break;
 			}

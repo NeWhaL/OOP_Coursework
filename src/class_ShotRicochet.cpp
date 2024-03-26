@@ -1,7 +1,5 @@
 #include "../include/class_ShotRicochet.h"
 #include "../include/class_Manager.h"
-#include <SFML/System/Vector2.hpp>
-#include <filesystem>
 
 ShotRicochet::ShotRicochet(sf::Vector2f coordinates, sf::Vector2f direction,
               float speed, float range_fire, float damage, TypeEffect effect,

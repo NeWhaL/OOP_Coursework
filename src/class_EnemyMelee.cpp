@@ -44,13 +44,13 @@ void EnemyMelee::SendMessage(Message *message)
 		}	break;
 	  case TypeMessage::EFFECT:
 	  {
-	 		switch(message->effect.type)
+	 		switch(message->effect.effect->GetTypeEffect())
 			{
 				case TypeEffect::EXPLOSION:
 				{
-					if (not (message->effect.creator != TypeObject::ENEMY and GameObject::CollisionWithObject(message->who_sent)))
-						return;
-					health -= message->effect.damage;
+					EffectExplosion* effect = static_cast<EffectExplosion*>(message->effect.effect);
+					if (not Enemy::CollisionWithEffect(effect)) return;
+					health -= effect->GetDamage();
 					if (health <= 0) DeathObject(message->who_sent);
 				} break;
 				default: break;

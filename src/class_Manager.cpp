@@ -1,11 +1,16 @@
 #include "../include/class_Manager.h"
 
-
 Manager *Manager::manager = nullptr;
 
-Manager::Manager(): game_objects(), messages(), sprite_room(new sf::Sprite(*ResourceManager::GetInstance()->getTRoom())),
-						  window(new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "GAME", sf::Style::Fullscreen)), cooldown_wave(5),
-						  time_until_the_next_wave(0), amount_wave(0)
+Manager::Manager(): 
+         game_objects(),
+         messages(),
+         sprite_room(new sf::Sprite(*ResourceManager::GetInstance()->getTRoom())),
+				 window(new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "GAME", sf::Style::Fullscreen)), 
+         cooldown_wave(5),
+				 time_until_the_next_wave(0),
+         amount_wave(0),
+         event_manager{EventManager::GetInstance()}
 {
 	// размеры поля
 	size_arena.up_left.x = 320;
@@ -51,7 +56,7 @@ Size_arena Manager::GetSizeArena() const { return size_arena; }
 void Manager::Run() 
 {
    hero = new Hero({600, 400}, 300, 10, 0.5, 1, 2);
-   game_objects.push_back(new Item({1200, 300}, ResourceManager::GetInstance()->getTEffectBomb(), TypeItem::EFFECT,
+   game_objects.push_back(new Item({1200, 300}, ResourceManager::GetInstance()->getTEffectExplosion(), TypeItem::EFFECT,
  								  TypeShot::NONE, TypeEffect::EXPLOSION, 0, 0, 0, 0, 0));
    sf::Clock time;
    while (window->isOpen()) 
@@ -69,12 +74,13 @@ void Manager::End() { Destroy(); }
 
 void Manager::DrawAllObject() const 
 {
-   window->clear();
-   window->draw(*sprite_room);
-   hero->Draw(window);
-   for (const auto &i : game_objects)
-     i->Draw(window);
-   window->display();
+  window->clear();
+  window->draw(*sprite_room);
+  hero->Draw(window);
+  for (const auto &i : game_objects)
+    i->Draw(window);
+  event_manager->Draw(window);
+  window->display();
 }
 
 void Manager::Update(float dt) 
@@ -82,6 +88,7 @@ void Manager::Update(float dt)
   hero->Update(dt);
   for (auto &object : game_objects)
     object->Update(dt);
+  event_manager->Update(dt);
 	CreateWaveEnemies(dt);
 
   Message *message;
@@ -92,8 +99,14 @@ void Manager::Update(float dt)
     switch (message->type_message)
 	  {
 		case TypeMessage::CREATE:
+    {
 			game_objects.push_back(message->create.new_object);
-			break;
+    } break;
+    case TypeMessage::CREATE_EFFECT:
+    case TypeMessage::END_EFFECT:
+    {
+      event_manager->SendMessage(message);
+    } break;
 		case TypeMessage::DEATH:
 		{
 			hero->GetMoney() += message->death.money;	
@@ -107,8 +120,8 @@ void Manager::Update(float dt)
     } break;
 		default:
 		{
-		 hero->SendMessage(message);
-		 for (auto i : game_objects)
+		  hero->SendMessage(message);
+		  for (auto i : game_objects)
 		 		i->SendMessage(message); 
 		} break;
 		}

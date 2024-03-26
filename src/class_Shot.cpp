@@ -45,12 +45,7 @@ void Shot::Move(float dt)
 
 void Shot::DeathObject(GameObject* killer)
 {
-	switch(effect)
-	{
-		case TypeEffect::EXPLOSION:
-			Message::CreateEffect((new EffectBomb(coordinates, creator)), this, this);
-		  break;
-		default: break;
-	}
+  if (effect != TypeEffect::NONE)
+    Message::StartEffect(effect, creator, this);
 	GameObject::DeathObject(killer);
 }

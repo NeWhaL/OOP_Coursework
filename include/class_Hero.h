@@ -23,6 +23,7 @@ private:
 	void DeathObject(GameObject* killer);
    bool CollisionWithObject(const GameObject * const object);
    void ShotSelectionToCreate(sf::Vector2f mouse_pos);
+   bool CollisionWithEffect(Effect* effect) const;
 
 public:
    Hero(sf::Vector2f coordinates, float speed, float health,

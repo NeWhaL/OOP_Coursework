@@ -2,14 +2,13 @@
 #define GAMEOBJ
 
 #include "class_ManagerResource.h"
+#include "class_EventManager.h"
 #include "global_functions.h"
 #include "main.h"
 #include "struct_Message.h"
 
 class FontForCharacteristics;
 class Manager;
-
-enum class TypeObject { NONE, PLAYER, ENEMY, SHOT, ITEM, EFFECT };
 
 class GameObject 
 {
@@ -45,6 +44,7 @@ protected:
   void MoveSprite();
   virtual void DeathObject(GameObject* killer);
   void SetSpriteFromTexture(const sf::Texture* texture, sf::Sprite*& sprite, int amount_sprite);
+  // virtual bool CollisionWithEffect(Effect* effect) const;
 
 public:
   GameObject(sf::Vector2f coordinates, float speed, float health, float damage,

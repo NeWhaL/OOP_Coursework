@@ -10,4 +10,5 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include "enums.h"
 #endif

@@ -2,10 +2,6 @@
 #define SHT
 
 #include "class_GameObject.h"
-#include "class_Effect.h"
-#include "class_EffectBomb.h"
-
-enum class TypeShot { NONE, BASE, RICOCHET, THROUGHT };
 
 class Shot : public GameObject 
 {

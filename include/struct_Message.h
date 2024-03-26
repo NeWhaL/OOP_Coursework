@@ -11,9 +11,6 @@ class GameObject;
 class Shot;
 class Effect;
 
-enum class TypeMessage { MOVE, CREATE, DEATH, EFFECT, ITEM, END_GAME };
-enum class TypeEndGame { DEATH_HERO, WIN };
-
 struct Message {
 	static Manager* manager;
   GameObject *who_sent;
@@ -27,18 +24,25 @@ struct Message {
       GameObject *new_object;
       GameObject *creator;
     } create;
+		struct
+		{
+			TypeEffect type_effect;
+			TypeObject creator;
+		} create_effect;
+		struct 
+	  {
+			Effect* effect;
+	  } effect;
+		struct
+		{
+			Effect* effect;
+		} end_effect;
     struct 
 	  {
       GameObject *who_die;
       GameObject *killer;
 		  int money;
     } death;
-	  struct 
-	  {
-		  TypeEffect type;
-		  TypeObject creator;
-		  float damage;
-	  } effect;
 	  struct
 	  {
 		  TypeEffect type_effect;
@@ -57,10 +61,12 @@ struct Message {
 	static void Move(GameObject* who_sent);
 	static void CreateShot(Shot* shot, GameObject* creator);
 	static void CreateEffect(Effect* effect, GameObject* who_sent, GameObject* creator);
-	static void ActionEffect(GameObject* who_sent, TypeObject creator, TypeEffect type_effect, float damage);
 	static void Death(GameObject* who_die, GameObject* killer, int amount_money);
   static void BuyItem(GameObject* who_sent, TypeShot type_shot, TypeEffect type_effect, 
 							float health, float damage, float speed, float range_fire);
+	static void StartEffect(TypeEffect type_effect, TypeObject creator, GameObject* who_sent);
+	static void EndEffect(Effect* effect);
+	static void ActionEffect(Effect* effect);
 	static void EndGame(TypeEndGame reason);
 };
 #endif
