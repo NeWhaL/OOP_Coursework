@@ -1,20 +1,11 @@
 #include "../include/class_EventManager.h"
 #include "../include/class_GameObject.h"
 
-EventManager* EventManager::ev_man = nullptr;
-
-EventManager* EventManager::GetInstance()
-{
-  return ev_man ? ev_man : ev_man = new EventManager;
-}
-
 EventManager::~EventManager()
 {
   for(auto& i : effects)
     delete i;
   effects.clear();
-  if (ev_man)
-    delete ev_man;
 }
 
 void EventManager::Update(float dt)

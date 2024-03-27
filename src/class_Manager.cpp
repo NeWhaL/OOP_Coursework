@@ -7,17 +7,8 @@ Manager::Manager():
          messages(),
          sprite_room(new sf::Sprite(*ResourceManager::GetInstance()->getTRoom())),
 				 window(new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "GAME", sf::Style::Fullscreen)), 
-         cooldown_wave(5),
-				 time_until_the_next_wave(0),
-         amount_wave(0),
-         event_manager{EventManager::GetInstance()}
-{
-	// размеры поля
-	size_arena.up_left.x = 320;
-	size_arena.up_left.y = 180;
-	size_arena.down_right.x = 1720;
-	size_arena.down_right.y = 900;
-}
+         event_manager{new EventManager()},
+         wave{new Wave()} {}
 
 Manager::~Manager() {
   for (auto &i : game_objects) {
@@ -50,8 +41,6 @@ void Manager::EventProcessing(sf::Event &ev)
 }
 
 Hero *Manager::GetHero() const { return hero; }
-
-Size_arena Manager::GetSizeArena() const { return size_arena; }
 
 void Manager::Run() 
 {
@@ -89,8 +78,8 @@ void Manager::Update(float dt)
   for (auto &object : game_objects)
     object->Update(dt);
   event_manager->Update(dt);
-	CreateWaveEnemies(dt);
-
+  wave->Update(game_objects, dt);
+  
   Message *message;
   while (not messages.empty()) 
 	{
@@ -130,21 +119,3 @@ void Manager::Update(float dt)
 }
 
 void Manager::SendMessage(Message *msg) { messages.push_back(msg); }
-
-void Manager::CreateWaveEnemies(float dt)
-{
-	time_until_the_next_wave += dt;
-	if (cooldown_wave > time_until_the_next_wave)
-		return;
-	time_until_the_next_wave = 0;
-	// int amount_enemy = 3;
-	// for (int i = 0; i < amount_enemy + amount_wave; i++)
-	// {
-	  // game_objects.push_back(new EnemyMelee({static_cast<float>(std::rand() % 1500 + 400), 
-		// 							  static_cast<float>(std::rand() % 500 + 400)}, 150, 10, 3));
-    game_objects.push_back(new EnemyRange({static_cast<float>(std::rand() % 1500 + 400), 
-									  static_cast<float>(std::rand() % 500 + 400)}, 150, 10, 3));
-
-	// }
-	// amount_wave++;
-}

@@ -3,6 +3,16 @@
 #include "class_GameObject.h"
 #include "class_Hero.h"
 
+//Для конструкторов в конечных классах противников
+struct EnemyCharacteristics
+{
+  sf::Vector2f coordinates;
+  float speed;
+  float health;
+  float damage;
+  int amount_money;
+};
+
 class Enemy : public GameObject {
 protected:
   const Hero* const hero;

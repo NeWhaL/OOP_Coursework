@@ -38,27 +38,26 @@ bool ShotRicochet::CollisionWithObject(const GameObject* const object)
 
 void ShotRicochet::CollisionWithWall()
 {
-  Size_arena tmp_size = manager->GetSizeArena();
 	float d_x = 0.f;
 	float d_y = 0.f;
-	if (coordinates.x - radius_hitbox_head < tmp_size.up_left.x)
+	if (coordinates.x - radius_hitbox_head < size_arena.up_left.x)
   {
-	  d_x = tmp_size.up_left.x - (coordinates.x - radius_hitbox_head);
+	  d_x = size_arena.up_left.x - (coordinates.x - radius_hitbox_head);
 		direction.x *= -1;
   }
-	else if (coordinates.x + radius_hitbox_head > tmp_size.down_right.x)
+	else if (coordinates.x + radius_hitbox_head > size_arena.down_right.x)
   {
-	  d_x = tmp_size.down_right.x - (coordinates.x + radius_hitbox_head);
+	  d_x = size_arena.down_right.x - (coordinates.x + radius_hitbox_head);
 		direction.x *= -1;
   }
-	if (coordinates.y - radius_hitbox_head < tmp_size.up_left.y)
+	if (coordinates.y - radius_hitbox_head < size_arena.up_left.y)
   {
-	  d_y = tmp_size.up_left.y - (coordinates.y - radius_hitbox_head);
+	  d_y = size_arena.up_left.y - (coordinates.y - radius_hitbox_head);
 		direction.y *= -1;
   }
-	else if (coordinates.y + radius_hitbox_head > tmp_size.down_right.y)
+	else if (coordinates.y + radius_hitbox_head > size_arena.down_right.y)
   {
-	  d_y = tmp_size.down_right.y - (coordinates.y + radius_hitbox_head);
+	  d_y = size_arena.down_right.y - (coordinates.y + radius_hitbox_head);
 		direction.y *= -1;
   }
 	coordinates.x += d_x;

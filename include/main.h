@@ -11,4 +11,11 @@
 #include <list>
 #include <vector>
 #include "enums.h"
+
+const static struct
+{
+   sf::Vector2u up_left { 320, 180 };
+   sf::Vector2u down_right { 1720, 900 };
+} size_arena;
+
 #endif

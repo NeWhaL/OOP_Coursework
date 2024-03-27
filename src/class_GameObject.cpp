@@ -77,17 +77,16 @@ sf::Vector2f GameObject::GetDirection() const
 
 void GameObject::CollisionWithWall() 
 {
-	Size_arena tmp_size = manager->GetSizeArena();
 	float d_x = 0.f;
 	float d_y = 0.f;
-	if (coordinates.x - radius_hitbox_head < tmp_size.up_left.x)
-	  d_x = tmp_size.up_left.x - (coordinates.x - radius_hitbox_head);
-	else if (coordinates.x + radius_hitbox_head > tmp_size.down_right.x)
-	  d_x = tmp_size.down_right.x - (coordinates.x + radius_hitbox_head);
-	if (coordinates.y - radius_hitbox_head < tmp_size.up_left.y)
-	  d_y = tmp_size.up_left.y - (coordinates.y - radius_hitbox_head);
-	else if (coordinates.y + radius_hitbox_head > tmp_size.down_right.y)
-	  d_y = tmp_size.down_right.y - (coordinates.y + radius_hitbox_head);
+	if (coordinates.x - radius_hitbox_head < size_arena.up_left.x)
+	  d_x = size_arena.up_left.x - (coordinates.x - radius_hitbox_head);
+	else if (coordinates.x + radius_hitbox_head > size_arena.down_right.x)
+	  d_x = size_arena.down_right.x - (coordinates.x + radius_hitbox_head);
+	if (coordinates.y - radius_hitbox_head < size_arena.up_left.y)
+	  d_y = size_arena.up_left.y - (coordinates.y - radius_hitbox_head);
+	else if (coordinates.y + radius_hitbox_head > size_arena.down_right.y)
+	  d_y = size_arena.down_right.y - (coordinates.y + radius_hitbox_head);
 	coordinates.x += d_x;
 	coordinates.y += d_y;
 }

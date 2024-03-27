@@ -1,6 +1,6 @@
 #include "../include/class_EnemyMelee.h"
 
-EnemyMelee::EnemyMelee(sf::Vector2f coordinates, float speed, float health, float damage):
+EnemyMelee::EnemyMelee(sf::Vector2f coordinates, float speed, float health, float damage, int amount_money):
 						Enemy{coordinates, speed, health, damage, 4, 10,
 						res_manager->getTMeleeEnemyHead(),
 						res_manager->getTHeroLegsUpDown(),
@@ -8,8 +8,12 @@ EnemyMelee::EnemyMelee(sf::Vector2f coordinates, float speed, float health, floa
 						res_manager->getTHeroLegsRight()}
 {
   type_object = TypeObject::ENEMY;
-  amount_money = 1;
+  this->amount_money = amount_money;
 }
+
+EnemyMelee::EnemyMelee(const EnemyCharacteristics& c):
+						EnemyMelee(c.coordinates, c.speed, 
+						c.health, c.damage, c.amount_money) {};
 
 void EnemyMelee::Move(float dt) 
 { 

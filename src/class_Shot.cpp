@@ -21,11 +21,10 @@ void Shot::Update(float dt)
 
 void Shot::CollisionWithWall() 
 {
-	Size_arena tmp_size = manager->GetSizeArena();
-	if (not(coordinates.x - radius_hitbox_head < tmp_size.up_left.x or
-          coordinates.x + radius_hitbox_head > tmp_size.down_right.x or
-          coordinates.y - radius_hitbox_head < tmp_size.up_left.y or
-          coordinates.y + radius_hitbox_head > tmp_size.down_right.y))
+	if (not(coordinates.x - radius_hitbox_head < size_arena.up_left.x or
+          coordinates.x + radius_hitbox_head > size_arena.down_right.x or
+          coordinates.y - radius_hitbox_head < size_arena.up_left.y or
+          coordinates.y + radius_hitbox_head > size_arena.down_right.y))
   return;
 	DeathObject(this);
 }

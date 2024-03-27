@@ -1,23 +1,31 @@
 #include "../include/class_EnemyRange.h"
-#include <filesystem>
 
-EnemyRange::EnemyRange(sf::Vector2f coordinates, float speed, float health, float damage):
+EnemyRange::EnemyRange(sf::Vector2f coordinates, float speed, float health, float damage, int amount_money, 
+						float shot_cooldown_total, float shot_cooldown, float hero_distance, float range_fire_shot,
+						float speed_shot, TypeShot type_shot, TypeEffect type_effect):
             Enemy{coordinates, speed, health, damage, 3, 10,
 									res_manager->getTRangeEnemyHead(),
 									res_manager->getTHeroLegsUpDown(),
 									res_manager->getTHeroLegsLeft(),
 									res_manager->getTHeroLegsRight()},
-            shot_cooldown_total{1.5},
-            shot_cooldown{0},
-						hero_distance{200},
-						range_fire_shot{400},
-						speed_shot{400},
-						current_type_shot{TypeShot::BASE},
-						current_type_effect{TypeEffect::EXPLOSION}
+            shot_cooldown_total{shot_cooldown_total},
+            shot_cooldown{shot_cooldown},
+						hero_distance{hero_distance},
+						range_fire_shot{range_fire_shot},
+						speed_shot{speed_shot},
+						type_shot{type_shot},
+						type_effect{type_effect}
 {
   type_object = TypeObject::ENEMY;
-  amount_money = 2;
+  this->amount_money = amount_money;
 }
+
+EnemyRange::EnemyRange(const EnemyRangeCharacteristics& c):
+						EnemyRange(c.coordinates, c.speed, c.health, c.damage, 
+											c.amount_money, c.shot_cooldown_total,
+											0, c.hero_distance, 
+											c.range_fire_shot, c.speed_shot, c.type_shot,
+											c.type_effect) {}
 
 void EnemyRange::Move(float dt) 
 {
@@ -104,18 +112,18 @@ void EnemyRange::CreateShot(float dt)
 void EnemyRange::ShotSelectionToCreate(sf::Vector2f target) 
 {
 	Shot* shot = nullptr;
-	switch(current_type_shot)
+	switch(type_shot)
 	{
 		case TypeShot::NONE:
 		case TypeShot::BASE:
 		{
 			shot = new ShotBase(GetPositionHead(), target, speed_shot,
-														range_fire_shot, damage, current_type_effect, TypeObject::ENEMY);
+														range_fire_shot, damage, type_effect, TypeObject::ENEMY);
 		} break;
 		case TypeShot::RICOCHET:
 		{
 			shot = new ShotRicochet(GetPositionHead(), target, speed_shot,
-														range_fire_shot, damage, current_type_effect, TypeObject::ENEMY);
+														range_fire_shot, damage, type_effect, TypeObject::ENEMY);
 		} break;
 		default: break;
 	}
