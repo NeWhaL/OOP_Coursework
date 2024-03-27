@@ -20,11 +20,8 @@ void Enemy::DirectionOnHero()
 	direction = NormalizationVector(direction);
 	if (not GameObject::CollisionWithObject(hero)) 
 		return;
-	if (direction.x > 0 and direction.y > 0)
-	{
-		direction.x *= -1;
-		direction.y *= -1;
-	}
+	direction.x *= -1;
+	direction.y *= -1;
 }
 
 bool Enemy::CollisionWithEffect(Effect* effect) const

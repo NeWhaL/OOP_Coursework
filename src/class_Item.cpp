@@ -23,6 +23,7 @@ void Item::Update(float dt)
 
 void Item::SendMessage(Message* message)
 {
+	if (message->type_message != TypeMessage::MOVE) return;
 	if (message->who_sent->GetTypeObject() != TypeObject::PLAYER or
 		  not GameObject::CollisionWithObject(message->who_sent) or
 			amount_money > message->who_sent->GetMoney())

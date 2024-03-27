@@ -17,7 +17,8 @@ void EnemyMelee::Move(float dt)
 	Message::Move(this);
 }
 
-void EnemyMelee::Update(float dt) {
+void EnemyMelee::Update(float dt) 
+{
   Move(dt);
   MoveSprite();
   GameObject::CollisionWithWall();
@@ -27,7 +28,8 @@ bool EnemyMelee::CollisionWithObject(const GameObject * const object)
 {
 	Enemy::DirectionOnHero();
 	return GameObject::CollisionWithObject(object) and 
-		object->GetTypeObject() == TypeObject::SHOT;
+				(object->GetTypeObject() == TypeObject::SHOT and 
+				object->GetCreatorObject() != TypeObject::ENEMY);
 }
 
 void EnemyMelee::SendMessage(Message *message) 
@@ -40,7 +42,6 @@ void EnemyMelee::SendMessage(Message *message)
 			auto& damage_object = message->who_sent;
 			if(not CollisionWithObject(damage_object)) return;
 			health -= damage_object->GetDamage();
-			if (health <= 0) DeathObject(damage_object);
 		}	break;
 	  case TypeMessage::EFFECT:
 	  {
@@ -51,11 +52,11 @@ void EnemyMelee::SendMessage(Message *message)
 					EffectExplosion* effect = static_cast<EffectExplosion*>(message->effect.effect);
 					if (not Enemy::CollisionWithEffect(effect)) return;
 					health -= effect->GetDamage();
-					if (health <= 0) DeathObject(message->who_sent);
 				} break;
 				default: break;
 			}
 	  }
 	  default: break;
   }
+	if (health <= 0) DeathObject(message->who_sent);
 }

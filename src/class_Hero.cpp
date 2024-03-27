@@ -11,7 +11,7 @@ Hero::Hero(sf::Vector2f coordinates, float speed, float health,
 			  shot_cooldown_total{shot_cooldown_total}, 
 				shot_cooldown{0},
 				current_type_shot{TypeShot::RICOCHET},
-			  current_effect_shot{TypeEffect::NONE},
+			  current_effect_shot{TypeEffect::EXPLOSION},
 			  range_fire_shot{800}, 
 				speed_shot{350}
 {
@@ -100,12 +100,12 @@ void Hero::ShotSelectionToCreate(sf::Vector2f mouse_pos)
 		case TypeShot::NONE:
 		case TypeShot::BASE:
 		{
-			shot = new ShotBase(head_sprite->getPosition(), mouse_pos, speed_shot,
+			shot = new ShotBase(GetPositionHead(), mouse_pos, speed_shot,
 														range_fire_shot, damage, current_effect_shot, TypeObject::PLAYER);
 		} break;
 		case TypeShot::RICOCHET:
 		{
-			shot = new ShotRicochet(head_sprite->getPosition(), mouse_pos, speed_shot,
+			shot = new ShotRicochet(GetPositionHead(), mouse_pos, speed_shot,
 														range_fire_shot, damage, current_effect_shot, TypeObject::PLAYER);
 		} break;
 		default: break;

@@ -1,4 +1,5 @@
 #include "../include/class_EnemyRange.h"
+#include <filesystem>
 
 EnemyRange::EnemyRange(sf::Vector2f coordinates, float speed, float health, float damage):
             Enemy{coordinates, speed, health, damage, 3, 10,
@@ -8,7 +9,7 @@ EnemyRange::EnemyRange(sf::Vector2f coordinates, float speed, float health, floa
 									res_manager->getTHeroLegsRight()},
             shot_cooldown_total{1.5},
             shot_cooldown{0},
-						distance{200},
+						hero_distance{200},
 						range_fire_shot{400},
 						speed_shot{400},
 						current_type_shot{TypeShot::BASE},
@@ -20,7 +21,7 @@ EnemyRange::EnemyRange(sf::Vector2f coordinates, float speed, float health, floa
 
 void EnemyRange::Move(float dt) 
 {
-	if(CollisionDistance()) Enemy::Move(dt);
+	if(not ToStopAtADistanceFromTheHero()) Enemy::Move(dt);
 	Message::Move(this);
 }
 
@@ -28,8 +29,7 @@ bool EnemyRange::CollisionWithObject(const GameObject * const object)
 {
 	Enemy::DirectionOnHero();
   return GameObject::CollisionWithObject(object) and 
-				 (object->GetTypeObject() == TypeObject::SHOT or
-				  object->GetTypeObject() == TypeObject::EFFECT);
+				 (object->GetTypeObject() == TypeObject::SHOT);
 }
 
 void EnemyRange::SendMessage(Message *message)
@@ -44,7 +44,6 @@ void EnemyRange::SendMessage(Message *message)
 			if(damage_object->GetCreatorObject() == TypeObject::ENEMY) return;
 			if(not CollisionWithObject(damage_object)) return;
 			health -= damage_object->GetDamage();
-			if (health <= 0) DeathObject(damage_object);
 		} break;
 	  case TypeMessage::EFFECT:
 	  {
@@ -55,13 +54,13 @@ void EnemyRange::SendMessage(Message *message)
 					EffectExplosion* effect = static_cast<EffectExplosion*>(message->effect.effect);
 					if (not Enemy::CollisionWithEffect(effect)) return;
 					health -= effect->GetDamage();
-					if (health <= 0) DeathObject(message->who_sent);
 				} break;
 				default: break;
 			}
 	  }
 	  default: break;
   }
+	if (health <= 0) DeathObject(message->who_sent);
 }
 
 void EnemyRange::Update(float dt)
@@ -72,17 +71,20 @@ void EnemyRange::Update(float dt)
 	CreateShot(dt);
 }
 
-bool EnemyRange::CollisionDistance()
+bool EnemyRange::ToStopAtADistanceFromTheHero()
 {
 	float length = LengthBetweenTwoPoints(coordinates, hero->GetPosition());
-	if(distance < length) return true;
-	else if(distance > length)
+	if(hero_distance < length) return false;
+	else if(hero_distance > length)
 	{
-		direction.x *= -1;
-		direction.y *= -1;
-		return true;
+		if(not GameObject::CollisionWithObject(hero))
+		{
+			direction.x *= -1;
+			direction.y *= -1;
+		}
+		return false;
 	}
-	return false;
+	return true;
 }
 
 void EnemyRange::CreateShot(float dt)
@@ -99,19 +101,20 @@ void EnemyRange::CreateShot(float dt)
 	ShotSelectionToCreate(normalized_vector);
 }
 
-void EnemyRange::ShotSelectionToCreate(sf::Vector2f mouse_pos) 
+void EnemyRange::ShotSelectionToCreate(sf::Vector2f target) 
 {
 	Shot* shot = nullptr;
 	switch(current_type_shot)
 	{
+		case TypeShot::NONE:
 		case TypeShot::BASE:
 		{
-			shot = new ShotBase(head_sprite->getPosition(), mouse_pos, speed_shot,
+			shot = new ShotBase(GetPositionHead(), target, speed_shot,
 														range_fire_shot, damage, current_type_effect, TypeObject::ENEMY);
 		} break;
 		case TypeShot::RICOCHET:
 		{
-			shot = new ShotRicochet(head_sprite->getPosition(), mouse_pos, speed_shot,
+			shot = new ShotRicochet(GetPositionHead(), target, speed_shot,
 														range_fire_shot, damage, current_type_effect, TypeObject::ENEMY);
 		} break;
 		default: break;

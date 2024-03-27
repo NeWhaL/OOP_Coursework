@@ -140,8 +140,11 @@ void Manager::CreateWaveEnemies(float dt)
 	// int amount_enemy = 3;
 	// for (int i = 0; i < amount_enemy + amount_wave; i++)
 	// {
-	  game_objects.push_back(new EnemyRange({static_cast<float>(std::rand() % 1500 + 400), 
+	  // game_objects.push_back(new EnemyMelee({static_cast<float>(std::rand() % 1500 + 400), 
+		// 							  static_cast<float>(std::rand() % 500 + 400)}, 150, 10, 3));
+    game_objects.push_back(new EnemyRange({static_cast<float>(std::rand() % 1500 + 400), 
 									  static_cast<float>(std::rand() % 500 + 400)}, 150, 10, 3));
+
 	// }
 	// amount_wave++;
 }

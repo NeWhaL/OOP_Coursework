@@ -9,7 +9,7 @@ class EnemyRange : public Enemy
 private:
   float shot_cooldown_total;
   float shot_cooldown;
-	float distance;
+	float hero_distance;
 	float range_fire_shot;
 	float speed_shot;
 	TypeShot current_type_shot;
@@ -17,7 +17,7 @@ private:
 
   void Move(float dt);
 	bool CollisionWithObject(const GameObject * const object);
-	bool CollisionDistance();
+	bool ToStopAtADistanceFromTheHero();
   void CreateShot(float dt);
 	void ShotSelectionToCreate(sf::Vector2f mouse_pos);
 
