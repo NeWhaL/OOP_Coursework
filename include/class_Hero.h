@@ -5,6 +5,7 @@
 #include "class_ManagerResource.h"
 #include "class_ShotBase.h"
 #include "class_ShotRicochet.h"
+#include "class_ShotThrought.h"
 
 class Hero : public GameObject 
 {

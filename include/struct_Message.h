@@ -60,7 +60,6 @@ struct Message {
 
 	static void Move(GameObject* who_sent);
 	static void CreateShot(Shot* shot, GameObject* creator);
-	static void CreateEffect(Effect* effect, GameObject* who_sent, GameObject* creator);
 	static void Death(GameObject* who_die, GameObject* killer, int amount_money);
   static void BuyItem(GameObject* who_sent, TypeShot type_shot, TypeEffect type_effect, 
 							float health, float damage, float speed, float range_fire);

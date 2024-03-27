@@ -14,9 +14,12 @@ Shot::Shot(sf::Vector2f coordinates, sf::Vector2f direction, float speed,
 
 void Shot::Update(float dt) 
 {
-   Move(dt);
-   MoveSprite();
-   CollisionWithWall();
+  Move(dt);
+	Message::Move(this);
+  MoveSprite();
+  CollisionWithWall();
+  if (range_fire > 0) return;
+  DeathObject(this);
 }
 
 void Shot::CollisionWithWall() 
@@ -37,9 +40,22 @@ void Shot::Move(float dt)
   delta_position -= coordinates;
   float length_delta_position = LengthVector(delta_position);
   range_fire -= length_delta_position;
-	Message::Move(this);
-  if (range_fire > 0) return;
-  DeathObject(this);
+}
+
+bool Shot::CollisionWithObject(const GameObject * const object)
+{
+  if (not GameObject::CollisionWithObject(object))
+		return false; 
+	bool is_collision = false;
+	switch(object->GetTypeObject())
+	{
+		case TypeObject::PLAYER:
+			is_collision = (creator != TypeObject::PLAYER); break;
+		case TypeObject::ENEMY:
+			is_collision = (creator != TypeObject::ENEMY); break;
+		default: break;
+	}
+	return is_collision;
 }
 
 void Shot::DeathObject(GameObject* killer)

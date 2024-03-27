@@ -11,13 +11,13 @@ protected:
 
    void Move(float dt);
    virtual void CollisionWithWall();
-
+   virtual bool CollisionWithObject(const GameObject * const object);
 public:
    Shot(sf::Vector2f coordinates, sf::Vector2f direction, float speed,
         float range_fire, float damage, TypeEffect effect,
         TypeObject who_creator);
    virtual ~Shot() = default;
-   void Update(float dt);
+   virtual void Update(float dt);
 	void DeathObject(GameObject* killer);
 };
 #endif

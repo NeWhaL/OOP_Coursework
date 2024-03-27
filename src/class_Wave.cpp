@@ -14,7 +14,7 @@ Wave::Wave():
   emc.amount_money = 1;
   emc.coordinates = { 0.f, 0.f };
   emc.damage = 1;
-  emc.health = 6;
+  emc.health = 100;
   emc.speed = 200;
   
   EnemyRangeCharacteristics& erc = enemy_range_characteristics;
